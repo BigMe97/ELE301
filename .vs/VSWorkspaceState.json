@@ -2,10 +2,8 @@
   "ExpandedNodes": [
     "",
     "\\Kortleser",
-    "\\Kortleser\\bin",
-    "\\Kortleser\\obj",
-    "\\Kortleser\\Properties"
+    "\\Kortleser\\bin"
   ],
-  "SelectedNode": "\\Kortleser\\Form1.Designer.cs",
+  "SelectedNode": "\\Kortleser\\Form1.cs",
   "PreviewInSolutionExplorer": false
 }

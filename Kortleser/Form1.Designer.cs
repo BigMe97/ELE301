@@ -238,10 +238,12 @@ namespace Kortleser
             // 
             // pbDoor
             // 
-            this.pbDoor.InitialImage = global::Kortleser.Properties.Resources.Door_Closed;
-            this.pbDoor.Location = new System.Drawing.Point(430, 58);
+            this.pbDoor.Image = global::Kortleser.Properties.Resources.Door_Closed;
+            this.pbDoor.InitialImage = null;
+            this.pbDoor.Location = new System.Drawing.Point(399, 58);
             this.pbDoor.Name = "pbDoor";
-            this.pbDoor.Size = new System.Drawing.Size(121, 126);
+            this.pbDoor.Size = new System.Drawing.Size(135, 161);
+            this.pbDoor.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.pbDoor.TabIndex = 15;
             this.pbDoor.TabStop = false;
             // 
