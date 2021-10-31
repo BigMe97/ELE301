@@ -7,55 +7,64 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Microsoft.VisualBasic;
+using System.Threading;
 
 namespace Kortleser
 {
     public partial class Kortleser : Form
     {
         static string passcode = "12345";
-
-
+        static string kortlesesernummer;
+        static bool OK = false, Cancel = false;
+        
 
         public Kortleser()
         {
             InitializeComponent();
-        }
-
-        private void txt_Kortlesernummer_TextChanged(object sender, EventArgs e)
-        {
-            string txt = txt_Kortlesernummer.Text;
-
-            try
+            while (!OK)
             {
-                // Keep the string a number
-                if (txt.Length > 0) { Convert.ToInt32(txt); }
-
-                // Keep the string at 4 digits
-                if (txt.Length > 4)
+                string txt = Interaction.InputBox("Hvilken kortleser er dette?", "Kortleservelger", "0000");
+                try
                 {
-                    txt_Kortlesernummer.Text = txt.Substring(0, 4);
-                    txt_Kortlesernummer.SelectionStart = 4;
-                    // throw new InvalidOperationException("Kortnummer kan bare være 4 tegn");
+                    // If user cancels
+                    if (txt == "")
+                    {
+                        Cancel = true;
+                        kortlesesernummer = "0000";
+                        break;
+                    }
+
+                    // Keep the string a number
+                    Convert.ToInt32(txt);
+
+                    // Keep the string at 4 digits
+                    if (txt.Length == 4)
+                    {
+                        OK = true;
+                        kortlesesernummer = txt;
+                    }
+                    else { MessageBox.Show("1 Kortlesernummer må være et heltall mellom 0000 og 9999"); }
 
                 }
-
+                catch (Exception)
+                {
+                    MessageBox.Show("2 Kortlesernummer må være et heltall mellom 0000 og 9999");
+                    OK = false;
+                }
             }
-            //catch (InvalidExpressionException not_int)
-            //{
-            //    txt_Kortlesernummer.Text = txt.Substring(0, txt.Length-1);
-            //    MessageBox.Show(not_int.Message);
-            //}
-            catch (Exception i)
+            OK = false;
+        }
+        
+        private void Kortleser_Load(object sender, EventArgs e)
+        {
+            if (Cancel)
             {
-                txt_Kortlesernummer.Text = txt.Substring(0, txt.Length - 1);
-                MessageBox.Show(i.Message);
+                Application.Exit();
             }
-
-
 
         }
-
-
+        
 
         private void txt_KortID_TextChanged(object sender, EventArgs e)
         {
@@ -71,16 +80,8 @@ namespace Kortleser
                 {
                     txt_KortID.Text = txt.Substring(0, 4);
                     txt_KortID.SelectionStart = 4;
-                    // throw new InvalidOperationException("Kortnummer kan bare være 4 tegn");
-
                 }
-
             }
-            //catch (InvalidExpressionException not_int)
-            //{
-            //    txt_KortID.Text = txt.Substring(0, txt.Length - 1);
-            //    MessageBox.Show(not_int.Message);
-            //}
             catch (Exception i)
             {
                 txt_KortID.Text = txt.Substring(0, txt.Length - 1);
@@ -188,9 +189,25 @@ namespace Kortleser
             MessageBox.Show(message);
         }
 
+       
         private void Kortleser_FormClosing(object sender, FormClosingEventArgs e)
         {
-            MessageBox.Show("Programmet vil avslutte...");
+            if (!Cancel)
+            {
+                var result = MessageBox.Show("Er du sikker på at du vil fjerne denne kortleseren?", "Fjerne kortleser " + kortlesesernummer.ToString(), MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+
+                // If the no button was pressed ...
+                if (result == DialogResult.No)
+                {
+                    // cancel the closure of the form.
+                    e.Cancel = true;
+                }
+            }
         }
+
+
+
+
+
     }
 }
