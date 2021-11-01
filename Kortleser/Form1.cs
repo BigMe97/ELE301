@@ -8,63 +8,60 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Microsoft.VisualBasic;
-using System.Threading;
+using System.IO.Ports;
 
 namespace Kortleser
 {
     public partial class Kortleser : Form
     {
+        // public SerialPort sp = new SerialPort();
+        public string MeldingFraSimSim = "";
         static string passcode = "12345";
         static string kortlesesernummer;
         static bool OK = false, Cancel = false;
-        
+        static string DigitalO, DigitalI, AnalogInn1, AnalogInn2, Temp1, Temp2;
+
 
         public Kortleser()
         {
             InitializeComponent();
-            while (!OK)
-            {
-                string txt = Interaction.InputBox("Hvilken kortleser er dette?", "Kortleservelger", "0000");
-                try
-                {
-                    // If user cancels
-                    if (txt == "")
-                    {
-                        Cancel = true;
-                        kortlesesernummer = "0000";
-                        break;
-                    }
+            VelgKortleserNummer();
 
-                    // Keep the string a number
-                    Convert.ToInt32(txt);
-
-                    // Keep the string at 4 digits
-                    if (txt.Length == 4)
-                    {
-                        OK = true;
-                        kortlesesernummer = txt;
-                    }
-                    else { MessageBox.Show("1 Kortlesernummer må være et heltall mellom 0000 og 9999"); }
-
-                }
-                catch (Exception)
-                {
-                    MessageBox.Show("2 Kortlesernummer må være et heltall mellom 0000 og 9999");
-                    OK = false;
-                }
-            }
-            OK = false;
         }
-        
+
+
+
         private void Kortleser_Load(object sender, EventArgs e)
         {
             if (Cancel)
             {
                 Application.Exit();
             }
-
+            OppdaterComPorter();
         }
-        
+
+
+
+        private void cbCOMPort_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            try
+            {
+                sp.Close();
+                sp.PortName = cbCOMPort.SelectedItem.ToString();
+                sp.BaudRate = 9600;
+                sp.ReadTimeout = 1000;
+                sp.Open();
+            }
+            catch (Exception)
+            {
+                MessageBox.Show("Prøv en annen serieport");
+            }
+        }
+
+
+
+
+
 
         private void txt_KortID_TextChanged(object sender, EventArgs e)
         {
@@ -81,6 +78,12 @@ namespace Kortleser
                     txt_KortID.Text = txt.Substring(0, 4);
                     txt_KortID.SelectionStart = 4;
                 }
+                
+                if (txt.Length == 4)
+                {
+                    tD4.Enabled = true;
+                    sp.WriteLine("$O41");
+                }
             }
             catch (Exception i)
             {
@@ -89,8 +92,7 @@ namespace Kortleser
             }
         }
 
-
-
+        // Nummer knappene
         private void btn_num_1_Click(object sender, EventArgs e)
         {
             TM_kode('1');
@@ -146,50 +148,158 @@ namespace Kortleser
             TM_kode('C');
         }
 
-
-        // Veit ikke hva/om vi skal bruke den til noe
+        // Veit ikke hva/om vi skal bruke den til noe men det så fint ut
         private void btn_num_HASH_Click(object sender, EventArgs e)
         {
             TM_kode('#');
         }
 
 
-        static void TM_kode(char input)
+        private void VelgKortleserNummer()
         {
-            switch (passcode.Length)
+            while (!OK)
             {
-                case 5:
-                    passcode = input.ToString();
-                    break;
-                case 1:
-                    passcode = passcode+input;
-                    break;
+                string txt = Interaction.InputBox("Hvilken kortleser er dette?", "Kortleservelger", "0000");
+                try
+                {
+                    // If user cancels
+                    if (txt == "")
+                    {
+                        Cancel = true;
+                        kortlesesernummer = "0000";
+                        break;
+                    }
 
-                case 2:
-                    passcode = passcode + input;
-                    break;
+                    // Keep the string a number
+                    Convert.ToInt32(txt);
 
-                case 3:
-                    passcode = passcode + input;
-                    Send(passcode);
+                    // Keep the string at 4 digits
+                    if (txt.Length == 4)
+                    {
+                        OK = true;
+                        kortlesesernummer = txt;
+                    }
+                    else { MessageBox.Show("1 Kortlesernummer må være et heltall mellom 0000 og 9999"); }
+
+                }
+                catch (Exception)
+                {
+                    MessageBox.Show("2 Kortlesernummer må være et heltall mellom 0000 og 9999");
+                    OK = false;
+                }
+            }
+            OK = false;
+
+        }
+
+        private void OppdaterComPorter()
+        {
+            string[] alleComPortNavn = SerialPort.GetPortNames();
+            for (int i = 0; i < alleComPortNavn.Length; i++)
+            {
+                cbCOMPort.Items.Add(alleComPortNavn[i]);
+            }
+            if (cbCOMPort.Items.Count > 0) cbCOMPort.SelectedIndex = 0;
+        }
+
+
+        public void TM_kode(char input)
+        {
+            if (tD4.Enabled == true)
+            {
+                if (input == 'C')
+                {
                     passcode = "12345";
-                    break;
+                }
+                else if (input == '#')
+                {
+                    // Do something??
+                }
+                else
+                {
+                    switch (passcode.Length)
+                    {
+                        case 5:
+                            passcode = input.ToString();
+                            break;
+                        case 1:
+                            passcode = passcode + input;
+                            break;
 
-                default:
-                    MessageBox.Show("Noe feilet");
-                    passcode = "12345";
-                    break;
+                        case 2:
+                            passcode = passcode + input;
+                            break;
+
+                        case 3:
+                            passcode = passcode + input;
+                            Send(passcode);
+                            sp.WriteLine("$O40");
+
+                            tD4.Enabled = false;
+                            txt_KortID.Text = "";
+                            passcode = "12345";
+                            break;
+
+                        default:
+                            MessageBox.Show("Noe feilet");
+                            passcode = "12345";
+                            break;
+                    }
+                }
+            }
+        }
+
+
+        // Send forespørsel til Sentral
+        public void Send(string message)
+        {
+            MessageBox.Show(message + "\n" + MeldingFraSimSim);
+        }
+
+
+
+        private void sp_DataReceived(object sender, SerialDataReceivedEventArgs e)
+        {
+            string data = sp.ReadExisting();
+            // MessageBox.Show(data);
+            if ((data.Length == 65) && (data.IndexOf("$") == 2) && (data.IndexOf("#") == 64))
+            {
+                MeldingFraSimSim = data;
             }
 
+
+
         }
 
 
-        static void Send(string message)
+        private void MeldingsTolker()
         {
-            MessageBox.Show(message);
+            // DigitalI, AnalogInn1, AnalogInn2, Temp1, Temp2;
+            DigitalI = MeldingFraSimSim.Substring(MeldingFraSimSim.IndexOf('D') + 1, 8);       // D
+            DigitalO = MeldingFraSimSim.Substring(MeldingFraSimSim.IndexOf('E') + 1, 8);       // E
+            AnalogInn1 = MeldingFraSimSim.Substring(MeldingFraSimSim.IndexOf('F') + 1, 4);       // F
+            AnalogInn2 = MeldingFraSimSim.Substring(MeldingFraSimSim.IndexOf('G') + 1, 4);       // G
+            DigitalI = MeldingFraSimSim.Substring(MeldingFraSimSim.IndexOf('H') + 1, 4);       // H
+            DigitalI = MeldingFraSimSim.Substring(MeldingFraSimSim.IndexOf('I') + 1, 3);       // I
+            DigitalI = MeldingFraSimSim.Substring(MeldingFraSimSim.IndexOf('j') + 1, 3);       // I
         }
 
-       
+
+
+
+
+
+
+
+
+
+        private void tD4_Tick(object sender, EventArgs e)
+        {
+            sp.Write("$O40");
+            tD4.Enabled = false;
+            txt_KortID.Text = "";
+        }
+
         private void Kortleser_FormClosing(object sender, FormClosingEventArgs e)
         {
             if (!Cancel)

@@ -33,7 +33,7 @@ namespace Kortleser
             this.btn_num_1 = new System.Windows.Forms.Button();
             this.txt_KortID = new System.Windows.Forms.TextBox();
             this.label2 = new System.Windows.Forms.Label();
-            this.serialPort1 = new System.IO.Ports.SerialPort(this.components);
+            this.sp = new System.IO.Ports.SerialPort(this.components);
             this.btn_num_2 = new System.Windows.Forms.Button();
             this.btn_num_3 = new System.Windows.Forms.Button();
             this.btn_num_4 = new System.Windows.Forms.Button();
@@ -46,6 +46,8 @@ namespace Kortleser
             this.btn_num_0 = new System.Windows.Forms.Button();
             this.btn_num_HASH = new System.Windows.Forms.Button();
             this.pbDoor = new System.Windows.Forms.PictureBox();
+            this.cbCOMPort = new System.Windows.Forms.ComboBox();
+            this.tD4 = new System.Windows.Forms.Timer(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.pbDoor)).BeginInit();
             this.SuspendLayout();
             // 
@@ -81,6 +83,10 @@ namespace Kortleser
             this.label2.Size = new System.Drawing.Size(55, 20);
             this.label2.TabIndex = 3;
             this.label2.Text = "KortID";
+            // 
+            // sp
+            // 
+            this.sp.DataReceived += new System.IO.Ports.SerialDataReceivedEventHandler(this.sp_DataReceived);
             // 
             // btn_num_2
             // 
@@ -247,11 +253,29 @@ namespace Kortleser
             this.pbDoor.TabIndex = 15;
             this.pbDoor.TabStop = false;
             // 
+            // cbCOMPort
+            // 
+            this.cbCOMPort.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.cbCOMPort.Font = new System.Drawing.Font("Arial Narrow", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.cbCOMPort.FormattingEnabled = true;
+            this.cbCOMPort.Location = new System.Drawing.Point(399, 254);
+            this.cbCOMPort.Name = "cbCOMPort";
+            this.cbCOMPort.Size = new System.Drawing.Size(76, 28);
+            this.cbCOMPort.Sorted = true;
+            this.cbCOMPort.TabIndex = 16;
+            this.cbCOMPort.SelectedIndexChanged += new System.EventHandler(this.cbCOMPort_SelectedIndexChanged);
+            // 
+            // tD4
+            // 
+            this.tD4.Interval = 45000;
+            this.tD4.Tick += new System.EventHandler(this.tD4_Tick);
+            // 
             // Kortleser
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(579, 531);
+            this.Controls.Add(this.cbCOMPort);
             this.Controls.Add(this.pbDoor);
             this.Controls.Add(this.btn_num_HASH);
             this.Controls.Add(this.btn_num_0);
@@ -282,7 +306,7 @@ namespace Kortleser
         private System.Windows.Forms.Button btn_num_1;
         private System.Windows.Forms.TextBox txt_KortID;
         private System.Windows.Forms.Label label2;
-        private System.IO.Ports.SerialPort serialPort1;
+        private System.IO.Ports.SerialPort sp;
         private System.Windows.Forms.Button btn_num_2;
         private System.Windows.Forms.Button btn_num_3;
         private System.Windows.Forms.Button btn_num_4;
@@ -295,6 +319,8 @@ namespace Kortleser
         private System.Windows.Forms.Button btn_num_0;
         private System.Windows.Forms.Button btn_num_HASH;
         private System.Windows.Forms.PictureBox pbDoor;
+        private System.Windows.Forms.ComboBox cbCOMPort;
+        private System.Windows.Forms.Timer tD4;
     }
 }
 
