@@ -19,8 +19,9 @@ namespace Kortleser
         static string passcode = "12345";
         static string kortlesesernummer;
         static bool OK = false, Cancel = false;
-        static string DigitalO, DigitalI, AnalogInn1, AnalogInn2, Temp1, Temp2;
-
+        static string DigitalO, DigitalI, Thermistor, AnalogInn1, AnalogInn2, Temp1, Temp2;
+        static bool open = false, alarm = false, locked = true;
+        
 
         public Kortleser()
         {
@@ -253,7 +254,7 @@ namespace Kortleser
         // Send forespørsel til Sentral
         public void Send(string message)
         {
-            MessageBox.Show(message + "\n" + MeldingFraSimSim);
+            MessageBox.Show("Koden: " + message + "\nMelding fra SimSim: \n" + MeldingFraSimSim);
         }
 
 
@@ -265,6 +266,7 @@ namespace Kortleser
             if ((data.Length == 65) && (data.IndexOf("$") == 2) && (data.IndexOf("#") == 64))
             {
                 MeldingFraSimSim = data;
+                MeldingsTolker();
             }
 
 
@@ -275,13 +277,32 @@ namespace Kortleser
         private void MeldingsTolker()
         {
             // DigitalI, AnalogInn1, AnalogInn2, Temp1, Temp2;
-            DigitalI = MeldingFraSimSim.Substring(MeldingFraSimSim.IndexOf('D') + 1, 8);       // D
-            DigitalO = MeldingFraSimSim.Substring(MeldingFraSimSim.IndexOf('E') + 1, 8);       // E
-            AnalogInn1 = MeldingFraSimSim.Substring(MeldingFraSimSim.IndexOf('F') + 1, 4);       // F
-            AnalogInn2 = MeldingFraSimSim.Substring(MeldingFraSimSim.IndexOf('G') + 1, 4);       // G
-            DigitalI = MeldingFraSimSim.Substring(MeldingFraSimSim.IndexOf('H') + 1, 4);       // H
-            DigitalI = MeldingFraSimSim.Substring(MeldingFraSimSim.IndexOf('I') + 1, 3);       // I
-            DigitalI = MeldingFraSimSim.Substring(MeldingFraSimSim.IndexOf('j') + 1, 3);       // I
+            DigitalI = MeldingFraSimSim.Substring(MeldingFraSimSim.IndexOf('D') + 1, 8);        // D
+            DigitalO = MeldingFraSimSim.Substring(MeldingFraSimSim.IndexOf('E') + 1, 8);        // E
+            Thermistor = MeldingFraSimSim.Substring(MeldingFraSimSim.IndexOf('F') + 1, 4);      // F
+            AnalogInn1 = MeldingFraSimSim.Substring(MeldingFraSimSim.IndexOf('G') + 1, 4);      // G
+            AnalogInn2 = MeldingFraSimSim.Substring(MeldingFraSimSim.IndexOf('H') + 1, 4);      // H
+            Temp1 = MeldingFraSimSim.Substring(MeldingFraSimSim.IndexOf('I') + 1, 3);           // I
+            Temp2 = MeldingFraSimSim.Substring(MeldingFraSimSim.IndexOf('j') + 1, 3);           // I
+
+            // Vise om døra er åpen
+            if(DigitalO[6] == '1')
+            {
+                if (!open)
+                {
+                    pbDoor.Image = global::Kortleser.Properties.Resources.Door_Open;
+                    open = true;
+                }
+            }
+            else if(DigitalO[6] == '0')
+            {
+                if (open)
+                {
+                    pbDoor.Image = global::Kortleser.Properties.Resources.Door_Closed;
+                    open = false;
+                }
+            }
+            
         }
 
 
