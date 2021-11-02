@@ -1,0 +1,9 @@
+C:\Users\magnu\OneDrive\HVL\Industriell IT\Semesteroppgave\Sentral\bin\Debug\Sentral.exe.config
+C:\Users\magnu\OneDrive\HVL\Industriell IT\Semesteroppgave\Sentral\bin\Debug\Sentral.exe
+C:\Users\magnu\OneDrive\HVL\Industriell IT\Semesteroppgave\Sentral\bin\Debug\Sentral.pdb
+C:\Users\magnu\OneDrive\HVL\Industriell IT\Semesteroppgave\Sentral\obj\Debug\Sentral.csproj.AssemblyReference.cache
+C:\Users\magnu\OneDrive\HVL\Industriell IT\Semesteroppgave\Sentral\obj\Debug\Sentral.Properties.Resources.resources
+C:\Users\magnu\OneDrive\HVL\Industriell IT\Semesteroppgave\Sentral\obj\Debug\Sentral.csproj.GenerateResource.cache
+C:\Users\magnu\OneDrive\HVL\Industriell IT\Semesteroppgave\Sentral\obj\Debug\Sentral.csproj.CoreCompileInputs.cache
+C:\Users\magnu\OneDrive\HVL\Industriell IT\Semesteroppgave\Sentral\obj\Debug\Sentral.exe
+C:\Users\magnu\OneDrive\HVL\Industriell IT\Semesteroppgave\Sentral\obj\Debug\Sentral.pdb

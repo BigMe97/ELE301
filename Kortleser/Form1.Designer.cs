@@ -45,10 +45,14 @@ namespace Kortleser
             this.btn_Clear = new System.Windows.Forms.Button();
             this.btn_num_0 = new System.Windows.Forms.Button();
             this.btn_num_HASH = new System.Windows.Forms.Button();
-            this.pbDoor = new System.Windows.Forms.PictureBox();
             this.cbCOMPort = new System.Windows.Forms.ComboBox();
             this.tD4 = new System.Windows.Forms.Timer(this.components);
+            this.pbLocked = new System.Windows.Forms.PictureBox();
+            this.pbDoor = new System.Windows.Forms.PictureBox();
+            this.pbAlarm = new System.Windows.Forms.PictureBox();
+            ((System.ComponentModel.ISupportInitialize)(this.pbLocked)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pbDoor)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pbAlarm)).BeginInit();
             this.SuspendLayout();
             // 
             // btn_num_1
@@ -242,23 +246,12 @@ namespace Kortleser
             this.btn_num_HASH.UseVisualStyleBackColor = true;
             this.btn_num_HASH.Click += new System.EventHandler(this.btn_num_HASH_Click);
             // 
-            // pbDoor
-            // 
-            this.pbDoor.Image = global::Kortleser.Properties.Resources.Door_Closed;
-            this.pbDoor.InitialImage = null;
-            this.pbDoor.Location = new System.Drawing.Point(399, 58);
-            this.pbDoor.Name = "pbDoor";
-            this.pbDoor.Size = new System.Drawing.Size(135, 161);
-            this.pbDoor.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
-            this.pbDoor.TabIndex = 15;
-            this.pbDoor.TabStop = false;
-            // 
             // cbCOMPort
             // 
             this.cbCOMPort.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
             this.cbCOMPort.Font = new System.Drawing.Font("Arial Narrow", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.cbCOMPort.FormattingEnabled = true;
-            this.cbCOMPort.Location = new System.Drawing.Point(399, 254);
+            this.cbCOMPort.Location = new System.Drawing.Point(384, 45);
             this.cbCOMPort.Name = "cbCOMPort";
             this.cbCOMPort.Size = new System.Drawing.Size(76, 28);
             this.cbCOMPort.Sorted = true;
@@ -270,11 +263,43 @@ namespace Kortleser
             this.tD4.Interval = 45000;
             this.tD4.Tick += new System.EventHandler(this.tD4_Tick);
             // 
+            // pbLocked
+            // 
+            this.pbLocked.Image = global::Kortleser.Properties.Resources.locked;
+            this.pbLocked.Location = new System.Drawing.Point(426, 266);
+            this.pbLocked.Name = "pbLocked";
+            this.pbLocked.Size = new System.Drawing.Size(50, 43);
+            this.pbLocked.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.pbLocked.TabIndex = 17;
+            this.pbLocked.TabStop = false;
+            // 
+            // pbDoor
+            // 
+            this.pbDoor.Image = global::Kortleser.Properties.Resources.Door_Closed;
+            this.pbDoor.InitialImage = null;
+            this.pbDoor.Location = new System.Drawing.Point(384, 99);
+            this.pbDoor.Name = "pbDoor";
+            this.pbDoor.Size = new System.Drawing.Size(135, 161);
+            this.pbDoor.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.pbDoor.TabIndex = 15;
+            this.pbDoor.TabStop = false;
+            // 
+            // pbAlarm
+            // 
+            this.pbAlarm.Location = new System.Drawing.Point(416, 327);
+            this.pbAlarm.Name = "pbAlarm";
+            this.pbAlarm.Size = new System.Drawing.Size(71, 71);
+            this.pbAlarm.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.pbAlarm.TabIndex = 18;
+            this.pbAlarm.TabStop = false;
+            // 
             // Kortleser
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(579, 531);
+            this.Controls.Add(this.pbAlarm);
+            this.Controls.Add(this.pbLocked);
             this.Controls.Add(this.cbCOMPort);
             this.Controls.Add(this.pbDoor);
             this.Controls.Add(this.btn_num_HASH);
@@ -295,7 +320,9 @@ namespace Kortleser
             this.Text = "Kortleser";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Kortleser_FormClosing);
             this.Load += new System.EventHandler(this.Kortleser_Load);
+            ((System.ComponentModel.ISupportInitialize)(this.pbLocked)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pbDoor)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pbAlarm)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -321,6 +348,8 @@ namespace Kortleser
         private System.Windows.Forms.PictureBox pbDoor;
         private System.Windows.Forms.ComboBox cbCOMPort;
         private System.Windows.Forms.Timer tD4;
+        private System.Windows.Forms.PictureBox pbLocked;
+        private System.Windows.Forms.PictureBox pbAlarm;
     }
 }
 

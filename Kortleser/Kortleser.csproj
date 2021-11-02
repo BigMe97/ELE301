@@ -87,5 +87,14 @@
   <ItemGroup>
     <None Include="Resources\Door_Open.png" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\alarm.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\locked.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\unlocked.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
