@@ -10,6 +10,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Npgsql;
 
 namespace Sentral
 {
@@ -23,12 +24,24 @@ namespace Sentral
         Socket lytteSokkel = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
         IPEndPoint serverEP = new IPEndPoint(IPAddress.Parse("127.0.0.1"), 9050);
 
+        static string cs = "Host=158.37.32.244;Username=hxxxxxx;Password=pass;Database=hxxxxxx";        // Kobler til sql serveren til skolen
+        NpgsqlConnection con = new NpgsqlConnection(cs);
+        
+
+        //Opprette "spørreobjekt"
+        NpgsqlCommand cmd = new NpgsqlCommand();
+        
+
+
         public Form1()
         {
             InitializeComponent();
-            ThreadPool.QueueUserWorkItem(new_Klient, 1);
+            // ThreadPool.QueueUserWorkItem(new_Klient, 1);
+            ThreadPool.QueueUserWorkItem(KobleTilSQL);
             lytteSokkel.Bind(serverEP);
             lytteSokkel.Listen(10);
+            
+            
         }
 
 
@@ -40,6 +53,21 @@ namespace Sentral
 
                 ThreadPool.QueueUserWorkItem(Klienttraad, kommSokkel);
         }
+
+        private void KobleTilSQL(object o)
+        {
+            try
+            {
+                con.Open();
+                cmd.Connection = con;
+                btn_LeggInn.Enabled = true;
+            }
+            catch (Exception)
+            {
+                MessageBox.Show("Kunne ikke koble til databasen");
+            }
+        }
+
 
         private void Klienttraad(object o)
         {
@@ -55,6 +83,9 @@ namespace Sentral
                 if (!ferdig)
                 {
                     MessageBox.Show(mottattTekst);
+
+                    // Metode som skal verifisere adgang
+
                     tekstSomSkalSendes = Svar(mottattTekst);
                     SendData(kommSokkel, tekstSomSkalSendes, out ferdig);
                 }
@@ -214,7 +245,6 @@ namespace Sentral
                 }
                 catch (Exception)
                 {
-
                 }
             }
             else
@@ -240,12 +270,49 @@ namespace Sentral
 
         private void btn_LeggInn_Click(object sender, EventArgs e)
         {
+            if ((txt_Fornavn.Text.Length > 1) && (txt_Etternavn.Text.Length > 1) && (txt_KortID.Text.Length == 4) && (txt_Pin.Text.Length == 4))
+            {
+                cmd.CommandText = string.Format("INSERT INTO brukere VALUES({0},{1},{2},{3},{4},{5});", txt_Fornavn.Text, txt_Etternavn.Text, txt_KortID.Text, txt_Pin.Text, txt_DatoStart.Text, txt_DatoSlutt.Text);
+                cmd.ExecuteNonQuery();
+                // MessageBox.Show(string.Format("INSERT INTO brukere VALUES({0},{1},{2},{3},{4},{5});", txt_Fornavn.Text, txt_Etternavn.Text, txt_KortID.Text, txt_Pin.Text, txt_DatoStart.Text, txt_DatoSlutt.Text));
+            }
+            else
+            {
+                cmd.CommandText = string.Format("INSERT INTO brukere VALUES({0},{1},{2},{3},{4},{5});", txt_Fornavn.Text, txt_Etternavn.Text, txt_KortID.Text, txt_Pin.Text, txt_DatoStart.Text, txt_DatoSlutt.Text);
+                cmd.ExecuteNonQuery();
+                MessageBox.Show(cmd.CommandText);
 
+            }
+        }
+
+        private void btn_Fjern_Click(object sender, EventArgs e)
+        {
+            cmd.CommandText = string.Format("DELETE FROM brukere WHERE kortID = {0}", txt_KortID);
+            cmd.ExecuteNonQuery();
+        }
+
+        private void btn_Nullstill_Click(object sender, EventArgs e)
+        {
+            Nullstill();
         }
 
         private void Calendar_Leave(object sender, EventArgs e)
         {
             Calendar.Visible = false;
+        }
+
+
+        public void Nullstill()
+        {
+            Calendar.SelectionStart = DateTime.Today;
+            Calendar.SelectionEnd = DateTime.Today;
+            txt_Fornavn.Text = "";
+            txt_Etternavn.Text = "";
+            txt_Epost.Text = "";
+            txt_DatoStart.Text = "";
+            txt_DatoSlutt.Text = "";
+            txt_KortID.Text = "";
+            txt_Pin.Text = "";
         }
     }
 }
