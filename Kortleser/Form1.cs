@@ -50,6 +50,7 @@ namespace Kortleser
             {
                 Application.Exit();
             }
+            this.Text = "Kortleser " + kortlesesernummer;
             OppdaterComPorter();
         }
 
@@ -65,8 +66,11 @@ namespace Kortleser
                 sp.BaudRate = 9600;
                 sp.ReadTimeout = 1000;
                 sp.Open();
-                sp.Write("R1");         // Be om en melding
-                // sp.Write("$E1");        // Be om melding ved endring av data
+                Thread.Sleep(1000);
+                sp.Write("$R1");         // Be om en melding
+                Thread.Sleep(1000);
+                sp.Write("$E1");        // Be om melding ved endring av data
+                Thread.Sleep(1000);
                 sp.Write("$S002");      // Oppdater hvert 2. sekund
             }
             catch (Exception)
@@ -433,15 +437,14 @@ namespace Kortleser
             }
 
             // Vise om alarmen er aktivert
-            if (DigitalO[7] == '1')
+            if (DigitalI[7] == '1')
             {
                 AlarmPå();
             }
-            else if (DigitalO[7] == '0')
+            else if (DigitalI[7] == '0')
             {
                 ResetAlarm();
             }
-
 
 
         }
@@ -458,7 +461,7 @@ namespace Kortleser
         // Sjekk om alarmen kan resettes
         private void ResetAlarm()
         {
-            if ((Convert.ToInt32(AnalogInn1) < 500))
+            if ((Convert.ToInt32(AnalogInn1) < 500 && DigitalI[7] == 0))
             {
                 pbAlarm.Image = null;
                 sp.Write("$O70");
@@ -507,7 +510,7 @@ namespace Kortleser
                     // cancel the closure of the form.
                     e.Cancel = true;
                 }
-                else
+                else if(kontaktMedServer)
                 {
                     klientSokkel.Shutdown(SocketShutdown.Both);
                     klientSokkel.Close();

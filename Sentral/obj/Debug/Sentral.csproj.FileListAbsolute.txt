@@ -7,3 +7,4 @@ C:\Users\magnu\OneDrive\HVL\Industriell IT\Semesteroppgave\Sentral\obj\Debug\Sen
 C:\Users\magnu\OneDrive\HVL\Industriell IT\Semesteroppgave\Sentral\obj\Debug\Sentral.csproj.CoreCompileInputs.cache
 C:\Users\magnu\OneDrive\HVL\Industriell IT\Semesteroppgave\Sentral\obj\Debug\Sentral.exe
 C:\Users\magnu\OneDrive\HVL\Industriell IT\Semesteroppgave\Sentral\obj\Debug\Sentral.pdb
+C:\Users\magnu\OneDrive\HVL\Industriell IT\Semesteroppgave\Sentral\obj\Debug\Sentral.Form1.resources
