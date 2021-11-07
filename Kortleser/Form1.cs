@@ -281,7 +281,7 @@ namespace Kortleser
 
             if (kontaktMedServer)
             {
-                input = kortlesesernummer + ',' + txt_KortID.Text + ',' + passcode;
+                input =  "K" + txt_KortID.Text + "P" + passcode;
                 if (!ferdig)
                 {
                     SendData(klientSokkel, input, out ferdig);
@@ -424,6 +424,7 @@ namespace Kortleser
                 {
                     pbDoor.Image = global::Kortleser.Properties.Resources.Door_Closed;
                     open = false;
+                    sp.WriteLine("$O51");
                 }
             }
 

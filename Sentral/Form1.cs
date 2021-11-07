@@ -24,19 +24,19 @@ namespace Sentral
         Socket lytteSokkel = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
         IPEndPoint serverEP = new IPEndPoint(IPAddress.Parse("127.0.0.1"), 9050);
 
-        static string cs = "Host=158.37.32.244;Username=hxxxxxx;Password=pass;Database=hxxxxxx";        // Kobler til sql serveren til skolen
+        static string cs = "Host=158.37.32.244;Username=h583404;Password=pass;Database=h583404";        // Kobler til sql serveren til skolen
         NpgsqlConnection con = new NpgsqlConnection(cs);
         
 
         //Opprette "spørreobjekt"
         NpgsqlCommand cmd = new NpgsqlCommand();
-        
+        NpgsqlDataReader rdr;
 
 
         public Form1()
         {
             InitializeComponent();
-            // ThreadPool.QueueUserWorkItem(new_Klient, 1);
+            ThreadPool.QueueUserWorkItem(new_Klient, 1);
             ThreadPool.QueueUserWorkItem(KobleTilSQL);
             lytteSokkel.Bind(serverEP);
             lytteSokkel.Listen(10);
@@ -60,11 +60,12 @@ namespace Sentral
             {
                 con.Open();
                 cmd.Connection = con;
-                btn_LeggInn.Enabled = true;
+                // btn_LeggInn.Enabled = true;
+                MessageBox.Show("Koblet til databasen\n");
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                MessageBox.Show("Kunne ikke koble til databasen");
+                MessageBox.Show("Kunne ikke koble til databasen\n" + e.Message);
             }
         }
 
@@ -75,18 +76,15 @@ namespace Sentral
             bool ferdig = false;
             IPEndPoint klientEP = (IPEndPoint)kommSokkel.RemoteEndPoint;
 
-            string hilsen = "Velkommen til en enkel testserver";
-            SendData(kommSokkel, hilsen, out ferdig);
             while (!ferdig)
             {
                 mottattTekst = MottaData(kommSokkel, out ferdig);
                 if (!ferdig)
                 {
                     MessageBox.Show(mottattTekst);
+                                                                                            // Verifiser melding
+                    tekstSomSkalSendes = Verifiser(mottattTekst);
 
-                    // Metode som skal verifisere adgang
-
-                    tekstSomSkalSendes = Svar(mottattTekst);
                     SendData(kommSokkel, tekstSomSkalSendes, out ferdig);
                 }
             }
@@ -129,11 +127,39 @@ namespace Sentral
         }
 
 
-        public string Svar(string melding)
+        public string Verifiser(string melding)
         {
-            string svar = "godkjent";
+            string svar, data=null;
+            int PIN, KortID, VPIN ;
+            KortID = Convert.ToInt16(melding.Substring(melding.IndexOf('K')+1,4));
+            PIN = Convert.ToInt16(melding.Substring(melding.IndexOf('P')+1, 4));
+            cmd.CommandText = "SELECT Gyldig_Fra, Gyldig_Til, PIN FROM Bruker WHERE KortID = " + KortID;
+            rdr = cmd.ExecuteReader();
+            while (rdr.Read())
+            {
+                data = $"{rdr.GetDateTime(0),0} {rdr.GetDateTime(1),0} {rdr.GetInt16(2),0}";
+                
+            }
+            rdr.Close();
+            if (data == null)
+            {
+                svar = "underkjent";
+            }
+            else
+            {
+                MessageBox.Show(data.Substring(40));
+                VPIN = Convert.ToInt16(data.Substring(40));
 
-
+                if (PIN == VPIN)
+                {
+                    svar = "godkjent";
+                }
+                else
+                {
+                    svar = "underkjent";
+                }
+            }
+            
             return svar;
         }
 

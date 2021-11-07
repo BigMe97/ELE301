@@ -52,13 +52,11 @@ namespace Sentral
             // btn_LeggInn
             // 
             this.btn_LeggInn.BackColor = System.Drawing.SystemColors.ControlLight;
-            this.btn_LeggInn.Enabled = false;
             this.btn_LeggInn.Location = new System.Drawing.Point(456, 82);
             this.btn_LeggInn.Name = "btn_LeggInn";
             this.btn_LeggInn.Size = new System.Drawing.Size(101, 36);
             this.btn_LeggInn.TabIndex = 8;
             this.btn_LeggInn.Text = "Legg til / Endre";
-            this.btn_LeggInn.UseVisualStyleBackColor = false;
             this.btn_LeggInn.Click += new System.EventHandler(this.btn_LeggInn_Click);
             // 
             // txt_Fornavn
@@ -239,7 +237,7 @@ namespace Sentral
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.Window;
-            this.ClientSize = new System.Drawing.Size(588, 442);
+            this.ClientSize = new System.Drawing.Size(822, 442);
             this.Controls.Add(this.btn_Nullstill);
             this.Controls.Add(this.btn_Fjern);
             this.Controls.Add(this.label7);
