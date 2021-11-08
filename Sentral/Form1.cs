@@ -217,6 +217,11 @@ namespace Sentral
         // GUI Delen
         // ***********************************************************************************************************************
 
+        /// <summary>
+        /// code to execute when text has been changed in KortID text field
+        /// </summary>
+        /// <param name="sender">Sender object</param>
+        /// <param name="e">Event arguments</param>
         private void txt_KortID_TextChanged(object sender, EventArgs e)
         {
             string txt = txt_KortID.Text;
@@ -242,7 +247,11 @@ namespace Sentral
 
 
 
-
+        /// <summary>
+        /// code to execute when text has been changed in Pin text field
+        /// </summary>
+        /// <param name="sender">Sender object</param>
+        /// <param name="e">Event arguments</param>
         private void txt_Pin_TextChanged(object sender, EventArgs e)
         {
             string txt = txt_Pin.Text;
@@ -272,7 +281,11 @@ namespace Sentral
 
 
 
-
+        /// <summary>
+        /// code to execute when DatoStart button has been clicked
+        /// </summary>
+        /// <param name="sender">Sender object</param>
+        /// <param name="e">Event arguments</param>
         private void txt_DatoStart_Click(object sender, EventArgs e)
         {
             setStart = true;
@@ -299,6 +312,11 @@ namespace Sentral
 
 
 
+        /// <summary>
+        /// code to execute when DatoSlutt button has been clicked
+        /// </summary>
+        /// <param name="sender">Sender object</param>
+        /// <param name="e">Event arguments</param>
         private void txt_DatoSlutt_Click(object sender, EventArgs e)
         {
             setSlutt = true;
@@ -326,6 +344,11 @@ namespace Sentral
 
 
 
+        /// <summary>
+        /// code to execute when Date is selected from Calendar sub-form
+        /// </summary>
+        /// <param name="sender">Sender object</param>
+        /// <param name="e">Event arguments</param>
         private void Calendar_DateSelected(object sender, DateRangeEventArgs e)
         {
             if (setStart)
@@ -344,6 +367,11 @@ namespace Sentral
 
 
 
+        /// <summary>
+        /// code to execute when exiting Calendar sub-form
+        /// </summary>
+        /// <param name="sender">Sender object</param>
+        /// <param name="e">Event arguments</param>
         private void Calendar_Leave(object sender, EventArgs e)
         {
             Calendar.Visible = false;
@@ -353,6 +381,11 @@ namespace Sentral
 
 
 
+        /// <summary>
+        /// code to execute when LeggInn button has been clicked
+        /// </summary>
+        /// <param name="sender">Sender object</param>
+        /// <param name="e">Event arguments</param>
         private void btn_LeggInn_Click(object sender, EventArgs e)
         {
             if ((txt_KortID.Text.Length == 4) && (txt_Pin.Text.Length == 4))
@@ -400,7 +433,6 @@ namespace Sentral
 
             }
         }
-        
 
 
 
@@ -408,6 +440,12 @@ namespace Sentral
 
 
 
+
+        /// <summary>
+        /// code to execute when Fjern button has been clicked
+        /// </summary>
+        /// <param name="sender">Sender object</param>
+        /// <param name="e">Event arguments</param>
         private void btn_Fjern_Click(object sender, EventArgs e)
         {
             if ((txt_KortID.Text.Length == 4) && (txt_Pin.Text.Length == 4))
@@ -437,6 +475,11 @@ namespace Sentral
 
 
 
+        /// <summary>
+        /// code to execute when Nullstill button has been clicked
+        /// </summary>
+        /// <param name="sender">Sender object</param>
+        /// <param name="e">Event arguments</param>
         private void btn_Nullstill_Click(object sender, EventArgs e)
         {
             Calendar.SelectionStart = DateTime.Today;
@@ -453,7 +496,7 @@ namespace Sentral
 
 
 
-        // Rapport GUI delen
+        // Rapport delen
         // ***********************************************************************************************************************
 
 
@@ -468,8 +511,15 @@ namespace Sentral
 
 
 
-        // Avslutt
+        // Avslutt Rapport delen
         // ***********************************************************************************************************************
+
+
+        /// <summary>
+        /// code to execute when Main form is clising
+        /// </summary>
+        /// <param name="sender">Sender object</param>
+        /// <param name="e">Event arguments</param>
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
         {
             var result = MessageBox.Show("Er du sikker på at du vil stenge sentralen?", "Steng Sentralen ", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
