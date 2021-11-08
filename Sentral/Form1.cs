@@ -24,7 +24,14 @@ namespace Sentral
         Socket lytteSokkel = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
         IPEndPoint serverEP = new IPEndPoint(IPAddress.Parse("127.0.0.1"), 9050);
 
-        static string cs = "Host=158.37.32.244;Username=h583404;Password=pass;Database=h583404";        // Kobler til sql serveren til skolen
+        // 
+        static string
+            _host = "158.37.32.24",
+            _userName = "h583404",
+            _psk = "pass",
+            _db = "h583404";
+
+        static string cs = $"Host={_host}4;Username={_userName};Password={_psk};Database={_db}";        // Kobler til sql serveren til skolen
         NpgsqlConnection con = new NpgsqlConnection(cs);
         
 
@@ -456,6 +463,11 @@ namespace Sentral
         // Rapport GUI delen
         // ***********************************************************************************************************************
 
+
+        public string Query(string query)
+        {
+            return "";
+        }
 
 
 
