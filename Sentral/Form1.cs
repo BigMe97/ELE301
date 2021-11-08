@@ -186,8 +186,8 @@ namespace Sentral
             {
                 MessageBox.Show(data.Substring(40));
                 VPIN = Convert.ToInt16(data.Substring(40));
-                GyldigFra = Convert.ToDateTime(data.Substring(0, 10));
-                GyldigTil = Convert.ToDateTime(data.Substring(11, 10));
+                GyldigFra = Convert.ToDateTime(data.Substring(0, 19));
+                GyldigTil = Convert.ToDateTime(data.Substring(20, 20));
 
 
                 if ((PIN == VPIN) && (DateTime.Today > GyldigFra) && (DateTime.Today < GyldigTil))
