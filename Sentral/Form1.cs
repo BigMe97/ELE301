@@ -43,7 +43,7 @@ namespace Sentral
             
             
         }
-        //ASK doe
+        // ASK doe
         // Initialiser SQL
         // ***********************************************************************************************************************
         private void KobleTilSQL(object o)
