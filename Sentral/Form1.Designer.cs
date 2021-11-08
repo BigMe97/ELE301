@@ -57,6 +57,7 @@ namespace Sentral
             this.btn_LeggInn.Size = new System.Drawing.Size(101, 36);
             this.btn_LeggInn.TabIndex = 8;
             this.btn_LeggInn.Text = "Legg til / Endre";
+            this.btn_LeggInn.UseVisualStyleBackColor = false;
             this.btn_LeggInn.Click += new System.EventHandler(this.btn_LeggInn_Click);
             // 
             // txt_Fornavn
@@ -211,7 +212,6 @@ namespace Sentral
             // btn_Fjern
             // 
             this.btn_Fjern.BackColor = System.Drawing.SystemColors.ControlLight;
-            this.btn_Fjern.Enabled = false;
             this.btn_Fjern.Location = new System.Drawing.Point(456, 124);
             this.btn_Fjern.Name = "btn_Fjern";
             this.btn_Fjern.Size = new System.Drawing.Size(101, 36);
@@ -223,7 +223,6 @@ namespace Sentral
             // btn_Nullstill
             // 
             this.btn_Nullstill.BackColor = System.Drawing.SystemColors.ControlLight;
-            this.btn_Nullstill.Enabled = false;
             this.btn_Nullstill.Location = new System.Drawing.Point(456, 168);
             this.btn_Nullstill.Name = "btn_Nullstill";
             this.btn_Nullstill.Size = new System.Drawing.Size(101, 36);

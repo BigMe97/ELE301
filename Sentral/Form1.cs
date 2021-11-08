@@ -19,7 +19,7 @@ namespace Sentral
         static byte[] data = new byte[1024];
         static string mottattTekst; 
         static string tekstSomSkalSendes;
-        static bool setStart = false, setSlutt = false;
+        static bool setStart = false, setSlutt = false, TilkobletDataBase = false;
 
         Socket lytteSokkel = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
         IPEndPoint serverEP = new IPEndPoint(IPAddress.Parse("127.0.0.1"), 9050);
@@ -44,23 +44,17 @@ namespace Sentral
             
         }
 
-
-
-        private void new_Klient(object o)
-        {
-                Console.WriteLine("Venter på en klient ...");
-                Socket kommSokkel = lytteSokkel.Accept(); // blokkerende metode
-
-                ThreadPool.QueueUserWorkItem(Klienttraad, kommSokkel);
-        }
-
+        // Initialiser SQL
+        // ***********************************************************************************************************************
         private void KobleTilSQL(object o)
         {
             try
             {
                 con.Open();
                 cmd.Connection = con;
-                // btn_LeggInn.Enabled = true;
+                // btn_LeggInn.Enabled = true;                          // Thread problemer
+                // btn_Fjern.Enabled = true;
+                TilkobletDataBase = true;
                 MessageBox.Show("Koblet til databasen\n");
             }
             catch (Exception e)
@@ -68,6 +62,30 @@ namespace Sentral
                 MessageBox.Show("Kunne ikke koble til databasen\n" + e.Message);
             }
         }
+
+
+
+
+
+   
+        // Serverfunksjoner
+        // ***********************************************************************************************************************
+        private void new_Klient(object o)
+        {
+            try
+            {
+                Socket kommSokkel = lytteSokkel.Accept(); // blokkerende metode
+                ThreadPool.QueueUserWorkItem(Klienttraad, kommSokkel);
+            }
+            catch (Exception)
+            {
+
+            }
+
+        }
+
+
+
 
 
         private void Klienttraad(object o)
@@ -92,6 +110,12 @@ namespace Sentral
             kommSokkel.Close();
         }
 
+
+
+
+
+
+
         static void SendData(Socket s, string dataSomSendes, out bool ferdig)
         {
             try
@@ -105,6 +129,12 @@ namespace Sentral
                 ferdig = true;
             }
         }
+
+
+
+
+
+
 
 
         static string MottaData(Socket s, out bool ferdig)
@@ -127,10 +157,17 @@ namespace Sentral
         }
 
 
+
+
+
+
+
+
         public string Verifiser(string melding)
         {
-            string svar, data=null;
-            int PIN, KortID, VPIN ;
+            string svar, data = null;
+            DateTime GyldigFra, GyldigTil;
+            int PIN, KortID, VPIN;
             KortID = Convert.ToInt16(melding.Substring(melding.IndexOf('K')+1,4));
             PIN = Convert.ToInt16(melding.Substring(melding.IndexOf('P')+1, 4));
             cmd.CommandText = "SELECT Gyldig_Fra, Gyldig_Til, PIN FROM Bruker WHERE KortID = " + KortID;
@@ -149,8 +186,11 @@ namespace Sentral
             {
                 MessageBox.Show(data.Substring(40));
                 VPIN = Convert.ToInt16(data.Substring(40));
+                GyldigFra = Convert.ToDateTime(data.Substring(0, 10));
+                GyldigTil = Convert.ToDateTime(data.Substring(11, 10));
 
-                if (PIN == VPIN)
+
+                if ((PIN == VPIN) && (DateTime.Today > GyldigFra) && (DateTime.Today < GyldigTil))
                 {
                     svar = "godkjent";
                 }
@@ -159,33 +199,24 @@ namespace Sentral
                     svar = "underkjent";
                 }
             }
-            
             return svar;
         }
 
 
-        private void Form1_FormClosing(object sender, FormClosingEventArgs e)
-        {
-            var result = MessageBox.Show("Er du sikker på at du vil stenge sentralen?", "Steng Sentralen ", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
 
-            // If the no button was pressed ...
-            if (result == DialogResult.No)
-            {
-                // cancel the closure of the form.
-                e.Cancel = true;
-            }
-            else
-            {
-                lytteSokkel.Close();
-            }
-        }
+
+
+
+
+
+        
 
 
 
 
 
         // GUI Delen
-        // ****************************************************************************
+        // ***********************************************************************************************************************
 
         private void txt_KortID_TextChanged(object sender, EventArgs e)
         {
@@ -209,6 +240,8 @@ namespace Sentral
                 MessageBox.Show(i.Message);
             }
         }
+
+
 
 
         private void txt_Pin_TextChanged(object sender, EventArgs e)
@@ -235,6 +268,12 @@ namespace Sentral
         }
 
 
+
+
+
+
+
+
         private void txt_DatoStart_Click(object sender, EventArgs e)
         {
             setStart = true;
@@ -258,6 +297,9 @@ namespace Sentral
 
         }
 
+
+
+
         private void txt_DatoSlutt_Click(object sender, EventArgs e)
         {
             setSlutt = true;
@@ -279,6 +321,12 @@ namespace Sentral
             }
         }
 
+
+
+
+
+
+
         private void Calendar_DateSelected(object sender, DateRangeEventArgs e)
         {
             if (setStart)
@@ -294,33 +342,8 @@ namespace Sentral
             Calendar.Visible = false;
         }
 
-        private void btn_LeggInn_Click(object sender, EventArgs e)
-        {
-            if ((txt_Fornavn.Text.Length > 1) && (txt_Etternavn.Text.Length > 1) && (txt_KortID.Text.Length == 4) && (txt_Pin.Text.Length == 4))
-            {
-                cmd.CommandText = string.Format("INSERT INTO brukere VALUES({0},{1},{2},{3},{4},{5});", txt_Fornavn.Text, txt_Etternavn.Text, txt_KortID.Text, txt_Pin.Text, txt_DatoStart.Text, txt_DatoSlutt.Text);
-                cmd.ExecuteNonQuery();
-                // MessageBox.Show(string.Format("INSERT INTO brukere VALUES({0},{1},{2},{3},{4},{5});", txt_Fornavn.Text, txt_Etternavn.Text, txt_KortID.Text, txt_Pin.Text, txt_DatoStart.Text, txt_DatoSlutt.Text));
-            }
-            else
-            {
-                cmd.CommandText = string.Format("INSERT INTO brukere VALUES({0},{1},{2},{3},{4},{5});", txt_Fornavn.Text, txt_Etternavn.Text, txt_KortID.Text, txt_Pin.Text, txt_DatoStart.Text, txt_DatoSlutt.Text);
-                cmd.ExecuteNonQuery();
-                MessageBox.Show(cmd.CommandText);
 
-            }
-        }
 
-        private void btn_Fjern_Click(object sender, EventArgs e)
-        {
-            cmd.CommandText = string.Format("DELETE FROM brukere WHERE kortID = {0}", txt_KortID);
-            cmd.ExecuteNonQuery();
-        }
-
-        private void btn_Nullstill_Click(object sender, EventArgs e)
-        {
-            Nullstill();
-        }
 
         private void Calendar_Leave(object sender, EventArgs e)
         {
@@ -328,7 +351,94 @@ namespace Sentral
         }
 
 
-        public void Nullstill()
+
+
+
+        private void btn_LeggInn_Click(object sender, EventArgs e)
+        {
+            if ((txt_KortID.Text.Length == 4) && (txt_Pin.Text.Length == 4))
+            {
+                try
+                {
+                    cmd.CommandText = string.Format("INSERT INTO bruker (KortID, PIN) VALUES({0},{1});", txt_KortID.Text, txt_Pin.Text);
+                    cmd.ExecuteNonQuery();
+                }
+                catch (Exception)
+                {
+                    MessageBox.Show("Dette kortet er allerede lagt inn");
+                }
+                
+                if (txt_Fornavn.Text != "")
+                {
+                    cmd.CommandText = string.Format("UPDATE Bruker SET Fornavn = '{0}' WHERE KortID = {1};", txt_Fornavn.Text, txt_KortID.Text);
+                    cmd.ExecuteNonQuery();
+                }
+                if (txt_Etternavn.Text != "")
+                {
+                    cmd.CommandText = string.Format("UPDATE Bruker SET Etternavn = '{0}' WHERE KortID = {1};", txt_Etternavn.Text, txt_KortID.Text);
+                    cmd.ExecuteNonQuery();
+                }
+                if (txt_Epost.Text != "")
+                {
+                    cmd.CommandText = string.Format("UPDATE Bruker SET EPost = '{0}' WHERE KortID = {1};", txt_Epost.Text, txt_KortID.Text);
+                    cmd.ExecuteNonQuery();
+                }
+                if (txt_DatoStart.Text != "")
+                {
+                    cmd.CommandText = string.Format("UPDATE Bruker SET Gyldig_Fra = '{0}' WHERE KortID = {1};", txt_DatoStart.Text, txt_KortID.Text);
+                    cmd.ExecuteNonQuery();
+                }
+                if (txt_DatoSlutt.Text != "")
+                {
+                    cmd.CommandText = string.Format("UPDATE Bruker SET Gyldig_Til = '{0}' WHERE KortID = {1};", txt_DatoSlutt.Text, txt_KortID.Text);
+                    cmd.ExecuteNonQuery();
+                }
+
+            }
+            else
+            {
+                MessageBox.Show("Kort-ID og PIN-kode må være inntastet og ha lengde 4");
+
+            }
+        }
+        
+
+
+
+
+
+
+
+        private void btn_Fjern_Click(object sender, EventArgs e)
+        {
+            if ((txt_KortID.Text.Length == 4) && (txt_Pin.Text.Length == 4))
+            {
+                string data = null;
+                cmd.CommandText = "SELECT KortID FROM Bruker WHERE KortID = " + txt_KortID.Text;
+                rdr = cmd.ExecuteReader();
+                while (rdr.Read())
+                {
+                    data = $"{rdr.GetInt16(0),0}";
+
+                }
+                rdr.Close();
+                if (data == txt_KortID.Text)
+                {
+                    cmd.CommandText = string.Format("DELETE FROM Bruker WHERE kortID = {0}", txt_KortID.Text);
+                    cmd.ExecuteNonQuery();
+                    MessageBox.Show("Bruker fjernet fra database");
+
+                }
+            }
+        }
+
+
+
+
+
+
+
+        private void btn_Nullstill_Click(object sender, EventArgs e)
         {
             Calendar.SelectionStart = DateTime.Today;
             Calendar.SelectionEnd = DateTime.Today;
@@ -339,6 +449,43 @@ namespace Sentral
             txt_DatoSlutt.Text = "";
             txt_KortID.Text = "";
             txt_Pin.Text = "";
+        }
+
+
+
+
+        // Rapport GUI delen
+        // ***********************************************************************************************************************
+
+
+
+
+
+
+
+
+
+
+
+
+
+        // Avslutt
+        // ***********************************************************************************************************************
+        private void Form1_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            var result = MessageBox.Show("Er du sikker på at du vil stenge sentralen?", "Steng Sentralen ", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+
+            // If the no button was pressed ...
+            if (result == DialogResult.No)
+            {
+                // cancel the closure of the form.
+                e.Cancel = true;
+            }
+            else
+            {
+                lytteSokkel.Close();
+
+            }
         }
     }
 }
