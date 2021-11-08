@@ -15,6 +15,7 @@ using System.IO.Ports;
 
 namespace Kortleser
 {
+    //Hei
     public partial class Kortleser : Form
     {
 
