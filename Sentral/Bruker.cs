@@ -16,11 +16,10 @@ namespace Sentral
             _surname,
             _pin;
 
-        public string KortID { get => _kortID; }
-
-        public string Email { get => _email; }
-        public string FirstName { get => _firstname; }
-        public string SurName { get => _surname; }
+        public string KortID { get => _kortID; set {_kortID = value; } }
+        public string Email { get => _email; set { _email = value; } }
+        public string FirstName { get => _firstname; set { _firstname = value; } }
+        public string SurName { get => _surname; set { _surname = value; } }
 
 
         protected Database _database;
@@ -28,8 +27,7 @@ namespace Sentral
         public Bruker(string kortID, Database database)
         {
             _database = database;
-
-            string[] msg = _database.QueryBruker(kortID);
+            _kortID = kortID;
         }
 
         public Bruker(string kortID, string epost, string fornavn, string etternavn, Database database)
@@ -54,6 +52,14 @@ namespace Sentral
         }
 
 
+
+        public override string ToString()
+        {
+            return $"{_firstname},{_surname},{_email},{_kortID}";
+        }
+
+
+
         /// <summary>
         /// Authorises card and pin from DB
         /// </summary>
@@ -71,5 +77,9 @@ namespace Sentral
                 return false;
             }
         }
+
+
+
+
     }
 }

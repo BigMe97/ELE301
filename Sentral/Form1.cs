@@ -16,9 +16,11 @@ namespace Sentral
     public partial class Form1 : Form
     {
         static byte[] data = new byte[1024];
-        static string mottattTekst; 
+        static string[] mottattTekst; 
         static string tekstSomSkalSendes;
-        static bool setStart = false, setSlutt = false, TilkobletDataBase = false;
+        static bool setStart = false, 
+            setSlutt = false, 
+            TilkobletDataBase = false;
 
         Socket lytteSokkel = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
         IPEndPoint serverEP = new IPEndPoint(IPAddress.Parse("127.0.0.1"), 9050);
@@ -31,10 +33,10 @@ namespace Sentral
         public Form1()
         {
             InitializeComponent();
-
+            cb_Rapporter.SelectedIndex = 0;
 
             //initialisere WebSocket
-            ThreadPool.QueueUserWorkItem(new_Klient);
+            ThreadPool.QueueUserWorkItem(FinnNyeKortlesere);
             lytteSokkel.Bind(serverEP);
             lytteSokkel.Listen(10);
 
@@ -61,18 +63,14 @@ namespace Sentral
         /// mottar ny klient request
         /// </summary>
         /// <param name="o">klientobjekt</param>
-        private void new_Klient(object o)
+        private void FinnNyeKortlesere(object o)
         {
             try
             {
                 Socket kommSokkel = lytteSokkel.Accept(); // blokkerende metode
-                ThreadPool.QueueUserWorkItem(Klienttraad, kommSokkel);
+                ThreadPool.QueueUserWorkItem(TraadSomMottarFraKortleser, kommSokkel);           // Start ny tråd for ny kortleser
             }
-            catch (Exception)
-            {
-
-            }
-
+            catch (Exception){  }
         }
 
 
@@ -81,7 +79,7 @@ namespace Sentral
         /// håndtere klienttråden
         /// </summary>
         /// <param name="o">klentobjektet</param>
-        private void Klienttraad(object o)
+        private void TraadSomMottarFraKortleser(object o)
         {
             Socket kommSokkel = o as Socket;
             bool ferdig = false;
@@ -89,12 +87,39 @@ namespace Sentral
 
             while (!ferdig)
             {
-                mottattTekst = MottaData(kommSokkel, out ferdig);
-                if (!ferdig)
-                {                                                                                         // Verifiser melding
-                    tekstSomSkalSendes = HandleCardAuthorisation(mottattTekst);
-                    SendData(kommSokkel, tekstSomSkalSendes, out ferdig);
+                mottattTekst = MottaDataFraKortleser(kommSokkel, out ferdig).Split(',');
+
+                switch (mottattTekst[0])
+                {
+                    case "Forespørsel": // Ny adgangs forespørsel
+                        if (!ferdig)
+                        {   
+                            if (AutoriserAdgang(mottattTekst[1], mottattTekst[2]))
+                            {   
+                                tekstSomSkalSendes = "godkjent";
+                                DB.QueryAdgang(mottattTekst[1], mottattTekst[3], true);
+                            }
+                            else
+                            {   
+                                tekstSomSkalSendes = "underkjent";
+                                DB.QueryAdgang(mottattTekst[1], mottattTekst[3], false);
+                            }
+                            SendDataTilbakeTilKortleser(kommSokkel, tekstSomSkalSendes, out ferdig);
+                        }
+
+                        break;
+                    case "Alarm":   // Alarm som skal registreres i DB
+                        DB.QueryAlarm(mottattTekst[2], mottattTekst[1]);
+                        break;
+                    case "Hei":     // Ny kortleser som skal registreres i DB
+                        DB.QueryKortleser(mottattTekst[1], mottattTekst[2], mottattTekst[3]);
+                        break;
+                    default:
+
+                        break;
                 }
+
+
             }
             MessageBox.Show("Forbindelsen med {0} er brutt", Convert.ToString(klientEP.Address));
             kommSokkel.Close();
@@ -108,7 +133,7 @@ namespace Sentral
         /// <param name="s">socket til å brukest til å sende</param>
         /// <param name="dataSomSendes">data som sendest til socket</param>
         /// <param name="ferdig">boolean ut om den er ferdig å sende</param>
-        static void SendData(Socket s, string dataSomSendes, out bool ferdig)
+        static void SendDataTilbakeTilKortleser(Socket s, string dataSomSendes, out bool ferdig)
         {
             try
             {
@@ -130,7 +155,7 @@ namespace Sentral
         /// <param name="s">socket objekt</param>
         /// <param name="ferdig">ut verdi for å sjekke om den er ferdig</param>
         /// <returns>streng av motatt data</returns>
-        static string MottaData(Socket s, out bool ferdig)
+        static string MottaDataFraKortleser(Socket s, out bool ferdig)
         {
             byte[] data = new byte[1024];
             string svar = " ";
@@ -157,7 +182,7 @@ namespace Sentral
         /// <param name="kortID">card id to use to verify</param>
         /// <param name="typedPinKode">typed pin code to check if is correct</param>
         /// <returns>true if authorisation was valid</returns>
-        public bool AuthorizeCard(string kortID, string typedPinKode)
+        public bool AutoriserAdgang(string kortID, string typedPinKode)
         {
             Bruker bruker = new Bruker(kortID, DB);
             return bruker.Authorise(typedPinKode);
@@ -165,31 +190,10 @@ namespace Sentral
 
 
 
-        /// <summary>
-        /// Handles authorization of Card login
-        /// </summary>
-        /// <param name="melding">message from "card reader with keypad"</param>
-        /// <returns>godkjent or underkjent depending on wheather the card was authorizsed</returns>
-        public string HandleCardAuthorisation(string melding)
-        {
-            string kortID = melding.Substring(melding.IndexOf('K')+1,4); //matten på denne meldingen har eg ikkje sjekka, vensligst se over om dette stemmer
-            string pin = melding.Substring(melding.IndexOf('P')+1, 4); // har kje sjekka matten her heller, bruke bare det som er skrevet tidligere
-
-            return AuthorizeCard(kortID, pin) ? "godkjent" : "underkjent";
-        }
 
 
 
 
-
-
-
-
-        // GUI Delen
-        // ***********************************************************************************************************************
-
-
-        //har noe funksjon som kan dekke mye av det som er skrevet her men har ikke implementert det enda
 
 
 
@@ -227,7 +231,6 @@ namespace Sentral
 
 
         /// <summary>
-
         /// code to execute when text has been changed in Pin text field
         /// </summary>
         /// <param name="sender">Sender object</param>
@@ -452,13 +455,115 @@ namespace Sentral
 
 
 
+
+
+
+
         // Rapport delen
         // ***********************************************************************************************************************
 
+        private void btn_Rapport_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                SaveFileDialog ofd = new SaveFileDialog();
+                ofd.Filter = "Text Files | *.txt";
+                ofd.ShowDialog();
+                string Path = ofd.FileName;
+                switch (cb_Rapporter.SelectedItem.ToString())
+                {
+                    case "Brukere":
+                        DB.QReportBrukere(Path, DB);
+                        break;
+                    case "Adgangslogg":
+                        DB.QReportAdganger(Convert.ToDateTime(txt_DatoStart.Text), Convert.ToDateTime(txt_DatoSlutt.Text), Path, DB);
+                        break;
+                    case "Ikke-godkjente adganger på en kortleser":
+                        DB.QReportIkkeGodkjent(cb_Kortlesere.SelectedItem.ToString(), Path, DB);
+                        break;
+                    case "Over 10 ikke-godkjente forsøk på en time":
+                        DB.QReportBrukereMedTiFeiledeForsok(Convert.ToDateTime(txt_DatoStart.Text), Convert.ToDateTime(txt_DatoSlutt.Text), Path, DB);
+                        break;
+                    case "Alarmer":
+                        DB.QReportAlarmer(Convert.ToDateTime(txt_DatoStart.Text), Convert.ToDateTime(txt_DatoSlutt.Text), Path, DB);
+                        break;
+                    case "Første og siste adgang for en kortleser":
+                        DB.QReportBrukstid(cb_Kortlesere.SelectedItem.ToString(), Path, DB);
+                        break;
+
+                    default:
+                        break;
+                }
+            }
+            catch(Exception)
+            {
+
+            }
+        }
+
+        private void cb_Rapporter_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            switch (cb_Rapporter.SelectedItem.ToString())
+            {
+                case "Brukere":
+                    KortlereseVisible(false);
+                    l_RapportInfo.Visible = false;
+
+                    break;
+                case "Adgangslogg":
+                    KortlereseVisible(false);
+                    l_RapportInfo.Visible = true;
+                    break;
+                case "Ikke-godkjente adganger på en kortleser":
+                    KortlereseVisible(true);
+                    l_RapportInfo.Visible = false;
+                    break;
+                case "Over 10 ikke-godkjente forsøk på en time":
+                    KortlereseVisible(false);
+                    l_RapportInfo.Visible = true;
+                    break;
+                case "Alarmer":
+                    KortlereseVisible(false);
+                    l_RapportInfo.Visible = true;
+                    break;
+                case "Første og siste adgang for en kortleser":
+                    KortlereseVisible(true);
+                    l_RapportInfo.Visible = false;
+                    break;
+
+                default:
+                    KortlereseVisible(false);
+                    l_RapportInfo.Visible = false;
+                    break;
+            }
+        }
 
         public string Create(string query)
         {
             return "";
+        }
+
+        /// <summary>
+        /// Updates items in cb_Kortlesere and makes it visible or hides it
+        /// </summary>
+        /// <param name="Vis"></param>
+        public void  KortlereseVisible(bool Vis)
+        {
+            if (Vis)
+            {
+                cb_Kortlesere.Items.Clear();
+                foreach (var Kortleser in DB.QueryKortlesere())
+                {
+                    cb_Kortlesere.Items.Add(Kortleser);
+                }
+                l_Kortleser.Visible = true;
+                cb_Kortlesere.Visible = true;
+            }
+            else
+            {
+                l_Kortleser.Visible = false;
+                cb_Kortlesere.Visible = false;
+            }
         }
 
 
@@ -469,15 +574,10 @@ namespace Sentral
 
 
 
-
-
-
-        // Avslutt Rapport delen
+        // Avslutt
         // ***********************************************************************************************************************
-
-
         /// <summary>
-        /// code to execute when Main form is clising
+        /// code to execute when Main form is closing
         /// </summary>
         /// <param name="sender">Sender object</param>
         /// <param name="e">Event arguments</param>
@@ -494,7 +594,7 @@ namespace Sentral
             else
             {
                 lytteSokkel.Close();
-
+                
             }
         }
     }
