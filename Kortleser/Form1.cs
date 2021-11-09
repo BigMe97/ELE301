@@ -25,6 +25,7 @@ namespace Kortleser
         static bool OK = false, Cancel = false;
         static string DigitalO, DigitalI, Thermistor, AnalogInn1, AnalogInn2, Temp1, Temp2;
         static bool open = false, alarm = false, locked = true;
+        string sisteAdgang = "Ingen forsøk";
 
         Socket klientSokkel = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
         IPEndPoint serverEP = new IPEndPoint(IPAddress.Parse("127.0.0.1"), 9050);
@@ -287,6 +288,7 @@ namespace Kortleser
                 {
                     SendData(klientSokkel, input, out ferdig);
                     stringData = MottaData(klientSokkel, out ferdig);
+                    sisteAdgang = Convert.ToString(DateTime.Now) + ", " + txt_KortID.Text + ", "+ stringData;
                     if (stringData == "godkjent")
                     {
                         Unlock();
@@ -295,6 +297,10 @@ namespace Kortleser
             }
         }
 
+        private void btnSisteAdgang_Click(object sender, EventArgs e) //brukergrensesnitt som gir muligheten til å se siste adgangsforespørsel og Sentralens svar på den
+        { 
+            txtSisteAdgang.Text = sisteAdgang;
+        }
 
         static void SendData(Socket s, string dataSomSendes, out bool ferdig)
         {

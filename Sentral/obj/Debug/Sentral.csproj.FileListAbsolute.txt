@@ -30,3 +30,5 @@ C:\Users\magnu\OneDrive\HVL\Industriell IT\Semesteroppgave\Sentral\bin\Debug\Sys
 C:\Users\magnu\OneDrive\HVL\Industriell IT\Semesteroppgave\Sentral\bin\Debug\System.Threading.Channels.xml
 C:\Users\magnu\OneDrive\HVL\Industriell IT\Semesteroppgave\Sentral\bin\Debug\System.Threading.Tasks.Extensions.xml
 C:\Users\magnu\OneDrive\HVL\Industriell IT\Semesteroppgave\Sentral\bin\Debug\System.ValueTuple.xml
+C:\Users\jeane\OneDrive\HVL Automatisering med robotikk\HØST 2021\Industriell IT (ELE301)\Innleveringer\Semesteroppgave - ELE301 Industriell IT\Kode\Sentral\obj\Debug\Sentral.exe
+C:\Users\jeane\OneDrive\HVL Automatisering med robotikk\HØST 2021\Industriell IT (ELE301)\Innleveringer\Semesteroppgave - ELE301 Industriell IT\Kode\Sentral\obj\Debug\Sentral.pdb

@@ -8,3 +8,13 @@ C:\Users\magnu\OneDrive\HVL\Industriell IT\Semesteroppgave\Kortleser\obj\Debug\K
 C:\Users\magnu\OneDrive\HVL\Industriell IT\Semesteroppgave\Kortleser\obj\Debug\Kortleser.exe
 C:\Users\magnu\OneDrive\HVL\Industriell IT\Semesteroppgave\Kortleser\obj\Debug\Kortleser.pdb
 C:\Users\magnu\OneDrive\HVL\Industriell IT\Semesteroppgave\Kortleser\obj\Debug\Kortleser.Kortleser.resources
+C:\Users\jeane\OneDrive\HVL Automatisering med robotikk\HØST 2021\Industriell IT (ELE301)\Innleveringer\Semesteroppgave - ELE301 Industriell IT\Kode\Kortleser\bin\Debug\Kortleser.exe.config
+C:\Users\jeane\OneDrive\HVL Automatisering med robotikk\HØST 2021\Industriell IT (ELE301)\Innleveringer\Semesteroppgave - ELE301 Industriell IT\Kode\Kortleser\bin\Debug\Kortleser.exe
+C:\Users\jeane\OneDrive\HVL Automatisering med robotikk\HØST 2021\Industriell IT (ELE301)\Innleveringer\Semesteroppgave - ELE301 Industriell IT\Kode\Kortleser\bin\Debug\Kortleser.pdb
+C:\Users\jeane\OneDrive\HVL Automatisering med robotikk\HØST 2021\Industriell IT (ELE301)\Innleveringer\Semesteroppgave - ELE301 Industriell IT\Kode\Kortleser\obj\Debug\Kortleser.csproj.AssemblyReference.cache
+C:\Users\jeane\OneDrive\HVL Automatisering med robotikk\HØST 2021\Industriell IT (ELE301)\Innleveringer\Semesteroppgave - ELE301 Industriell IT\Kode\Kortleser\obj\Debug\Kortleser.Kortleser.resources
+C:\Users\jeane\OneDrive\HVL Automatisering med robotikk\HØST 2021\Industriell IT (ELE301)\Innleveringer\Semesteroppgave - ELE301 Industriell IT\Kode\Kortleser\obj\Debug\Kortleser.Properties.Resources.resources
+C:\Users\jeane\OneDrive\HVL Automatisering med robotikk\HØST 2021\Industriell IT (ELE301)\Innleveringer\Semesteroppgave - ELE301 Industriell IT\Kode\Kortleser\obj\Debug\Kortleser.csproj.GenerateResource.cache
+C:\Users\jeane\OneDrive\HVL Automatisering med robotikk\HØST 2021\Industriell IT (ELE301)\Innleveringer\Semesteroppgave - ELE301 Industriell IT\Kode\Kortleser\obj\Debug\Kortleser.csproj.CoreCompileInputs.cache
+C:\Users\jeane\OneDrive\HVL Automatisering med robotikk\HØST 2021\Industriell IT (ELE301)\Innleveringer\Semesteroppgave - ELE301 Industriell IT\Kode\Kortleser\obj\Debug\Kortleser.exe
+C:\Users\jeane\OneDrive\HVL Automatisering med robotikk\HØST 2021\Industriell IT (ELE301)\Innleveringer\Semesteroppgave - ELE301 Industriell IT\Kode\Kortleser\obj\Debug\Kortleser.pdb

@@ -50,6 +50,8 @@ namespace Kortleser
             this.pbLocked = new System.Windows.Forms.PictureBox();
             this.pbDoor = new System.Windows.Forms.PictureBox();
             this.pbAlarm = new System.Windows.Forms.PictureBox();
+            this.btnSisteAdgang = new System.Windows.Forms.Button();
+            this.txtSisteAdgang = new System.Windows.Forms.TextBox();
             ((System.ComponentModel.ISupportInitialize)(this.pbLocked)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pbDoor)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pbAlarm)).BeginInit();
@@ -60,10 +62,11 @@ namespace Kortleser
             this.btn_num_1.Cursor = System.Windows.Forms.Cursors.Hand;
             this.btn_num_1.FlatAppearance.BorderSize = 3;
             this.btn_num_1.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btn_num_1.Location = new System.Drawing.Point(29, 96);
+            this.btn_num_1.Location = new System.Drawing.Point(44, 148);
+            this.btn_num_1.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.btn_num_1.Name = "btn_num_1";
             this.btn_num_1.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            this.btn_num_1.Size = new System.Drawing.Size(76, 55);
+            this.btn_num_1.Size = new System.Drawing.Size(114, 85);
             this.btn_num_1.TabIndex = 2;
             this.btn_num_1.Text = "1";
             this.btn_num_1.UseVisualStyleBackColor = true;
@@ -72,9 +75,10 @@ namespace Kortleser
             // txt_KortID
             // 
             this.txt_KortID.Font = new System.Drawing.Font("Arial Narrow", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txt_KortID.Location = new System.Drawing.Point(29, 45);
+            this.txt_KortID.Location = new System.Drawing.Point(44, 69);
+            this.txt_KortID.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.txt_KortID.Name = "txt_KortID";
-            this.txt_KortID.Size = new System.Drawing.Size(93, 29);
+            this.txt_KortID.Size = new System.Drawing.Size(138, 40);
             this.txt_KortID.TabIndex = 1;
             this.txt_KortID.TextChanged += new System.EventHandler(this.txt_KortID_TextChanged);
             // 
@@ -82,9 +86,10 @@ namespace Kortleser
             // 
             this.label2.AutoSize = true;
             this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label2.Location = new System.Drawing.Point(25, 25);
+            this.label2.Location = new System.Drawing.Point(38, 38);
+            this.label2.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(55, 20);
+            this.label2.Size = new System.Drawing.Size(80, 29);
             this.label2.TabIndex = 3;
             this.label2.Text = "KortID";
             // 
@@ -97,10 +102,11 @@ namespace Kortleser
             this.btn_num_2.Cursor = System.Windows.Forms.Cursors.Hand;
             this.btn_num_2.FlatAppearance.BorderSize = 3;
             this.btn_num_2.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btn_num_2.Location = new System.Drawing.Point(136, 96);
+            this.btn_num_2.Location = new System.Drawing.Point(204, 148);
+            this.btn_num_2.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.btn_num_2.Name = "btn_num_2";
             this.btn_num_2.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            this.btn_num_2.Size = new System.Drawing.Size(76, 55);
+            this.btn_num_2.Size = new System.Drawing.Size(114, 85);
             this.btn_num_2.TabIndex = 4;
             this.btn_num_2.Text = "2";
             this.btn_num_2.UseVisualStyleBackColor = true;
@@ -111,10 +117,11 @@ namespace Kortleser
             this.btn_num_3.Cursor = System.Windows.Forms.Cursors.Hand;
             this.btn_num_3.FlatAppearance.BorderSize = 3;
             this.btn_num_3.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btn_num_3.Location = new System.Drawing.Point(243, 96);
+            this.btn_num_3.Location = new System.Drawing.Point(364, 148);
+            this.btn_num_3.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.btn_num_3.Name = "btn_num_3";
             this.btn_num_3.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            this.btn_num_3.Size = new System.Drawing.Size(76, 55);
+            this.btn_num_3.Size = new System.Drawing.Size(114, 85);
             this.btn_num_3.TabIndex = 5;
             this.btn_num_3.Text = "3";
             this.btn_num_3.UseVisualStyleBackColor = true;
@@ -125,10 +132,11 @@ namespace Kortleser
             this.btn_num_4.Cursor = System.Windows.Forms.Cursors.Hand;
             this.btn_num_4.FlatAppearance.BorderSize = 3;
             this.btn_num_4.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btn_num_4.Location = new System.Drawing.Point(29, 184);
+            this.btn_num_4.Location = new System.Drawing.Point(44, 283);
+            this.btn_num_4.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.btn_num_4.Name = "btn_num_4";
             this.btn_num_4.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            this.btn_num_4.Size = new System.Drawing.Size(76, 55);
+            this.btn_num_4.Size = new System.Drawing.Size(114, 85);
             this.btn_num_4.TabIndex = 6;
             this.btn_num_4.Text = "4";
             this.btn_num_4.UseVisualStyleBackColor = true;
@@ -139,10 +147,11 @@ namespace Kortleser
             this.btn_num_5.Cursor = System.Windows.Forms.Cursors.Hand;
             this.btn_num_5.FlatAppearance.BorderSize = 3;
             this.btn_num_5.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btn_num_5.Location = new System.Drawing.Point(135, 184);
+            this.btn_num_5.Location = new System.Drawing.Point(202, 283);
+            this.btn_num_5.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.btn_num_5.Name = "btn_num_5";
             this.btn_num_5.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            this.btn_num_5.Size = new System.Drawing.Size(76, 55);
+            this.btn_num_5.Size = new System.Drawing.Size(114, 85);
             this.btn_num_5.TabIndex = 7;
             this.btn_num_5.Text = "5";
             this.btn_num_5.UseVisualStyleBackColor = true;
@@ -153,10 +162,11 @@ namespace Kortleser
             this.btn_num_6.Cursor = System.Windows.Forms.Cursors.Hand;
             this.btn_num_6.FlatAppearance.BorderSize = 3;
             this.btn_num_6.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btn_num_6.Location = new System.Drawing.Point(243, 184);
+            this.btn_num_6.Location = new System.Drawing.Point(364, 283);
+            this.btn_num_6.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.btn_num_6.Name = "btn_num_6";
             this.btn_num_6.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            this.btn_num_6.Size = new System.Drawing.Size(76, 55);
+            this.btn_num_6.Size = new System.Drawing.Size(114, 85);
             this.btn_num_6.TabIndex = 8;
             this.btn_num_6.Text = "6";
             this.btn_num_6.UseVisualStyleBackColor = true;
@@ -167,10 +177,11 @@ namespace Kortleser
             this.btn_num_7.Cursor = System.Windows.Forms.Cursors.Hand;
             this.btn_num_7.FlatAppearance.BorderSize = 3;
             this.btn_num_7.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btn_num_7.Location = new System.Drawing.Point(29, 272);
+            this.btn_num_7.Location = new System.Drawing.Point(44, 418);
+            this.btn_num_7.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.btn_num_7.Name = "btn_num_7";
             this.btn_num_7.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            this.btn_num_7.Size = new System.Drawing.Size(76, 55);
+            this.btn_num_7.Size = new System.Drawing.Size(114, 85);
             this.btn_num_7.TabIndex = 9;
             this.btn_num_7.Text = "7";
             this.btn_num_7.UseVisualStyleBackColor = true;
@@ -181,10 +192,11 @@ namespace Kortleser
             this.btn_num_8.Cursor = System.Windows.Forms.Cursors.Hand;
             this.btn_num_8.FlatAppearance.BorderSize = 3;
             this.btn_num_8.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btn_num_8.Location = new System.Drawing.Point(136, 272);
+            this.btn_num_8.Location = new System.Drawing.Point(204, 418);
+            this.btn_num_8.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.btn_num_8.Name = "btn_num_8";
             this.btn_num_8.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            this.btn_num_8.Size = new System.Drawing.Size(76, 55);
+            this.btn_num_8.Size = new System.Drawing.Size(114, 85);
             this.btn_num_8.TabIndex = 10;
             this.btn_num_8.Text = "8";
             this.btn_num_8.UseVisualStyleBackColor = true;
@@ -195,10 +207,11 @@ namespace Kortleser
             this.btn_num_9.Cursor = System.Windows.Forms.Cursors.Hand;
             this.btn_num_9.FlatAppearance.BorderSize = 3;
             this.btn_num_9.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btn_num_9.Location = new System.Drawing.Point(243, 272);
+            this.btn_num_9.Location = new System.Drawing.Point(364, 418);
+            this.btn_num_9.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.btn_num_9.Name = "btn_num_9";
             this.btn_num_9.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            this.btn_num_9.Size = new System.Drawing.Size(76, 55);
+            this.btn_num_9.Size = new System.Drawing.Size(114, 85);
             this.btn_num_9.TabIndex = 11;
             this.btn_num_9.Text = "9";
             this.btn_num_9.UseVisualStyleBackColor = true;
@@ -209,10 +222,11 @@ namespace Kortleser
             this.btn_Clear.Cursor = System.Windows.Forms.Cursors.Hand;
             this.btn_Clear.FlatAppearance.BorderSize = 3;
             this.btn_Clear.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btn_Clear.Location = new System.Drawing.Point(29, 360);
+            this.btn_Clear.Location = new System.Drawing.Point(44, 554);
+            this.btn_Clear.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.btn_Clear.Name = "btn_Clear";
             this.btn_Clear.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            this.btn_Clear.Size = new System.Drawing.Size(76, 55);
+            this.btn_Clear.Size = new System.Drawing.Size(114, 85);
             this.btn_Clear.TabIndex = 12;
             this.btn_Clear.Text = "C";
             this.btn_Clear.UseVisualStyleBackColor = true;
@@ -223,10 +237,11 @@ namespace Kortleser
             this.btn_num_0.Cursor = System.Windows.Forms.Cursors.Hand;
             this.btn_num_0.FlatAppearance.BorderSize = 3;
             this.btn_num_0.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btn_num_0.Location = new System.Drawing.Point(136, 360);
+            this.btn_num_0.Location = new System.Drawing.Point(204, 554);
+            this.btn_num_0.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.btn_num_0.Name = "btn_num_0";
             this.btn_num_0.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            this.btn_num_0.Size = new System.Drawing.Size(76, 55);
+            this.btn_num_0.Size = new System.Drawing.Size(114, 85);
             this.btn_num_0.TabIndex = 13;
             this.btn_num_0.Text = "0";
             this.btn_num_0.UseVisualStyleBackColor = true;
@@ -237,10 +252,11 @@ namespace Kortleser
             this.btn_num_HASH.Cursor = System.Windows.Forms.Cursors.Hand;
             this.btn_num_HASH.FlatAppearance.BorderSize = 3;
             this.btn_num_HASH.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btn_num_HASH.Location = new System.Drawing.Point(243, 360);
+            this.btn_num_HASH.Location = new System.Drawing.Point(364, 554);
+            this.btn_num_HASH.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.btn_num_HASH.Name = "btn_num_HASH";
             this.btn_num_HASH.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            this.btn_num_HASH.Size = new System.Drawing.Size(76, 55);
+            this.btn_num_HASH.Size = new System.Drawing.Size(114, 85);
             this.btn_num_HASH.TabIndex = 14;
             this.btn_num_HASH.Text = "#";
             this.btn_num_HASH.UseVisualStyleBackColor = true;
@@ -251,9 +267,10 @@ namespace Kortleser
             this.cbCOMPort.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
             this.cbCOMPort.Font = new System.Drawing.Font("Arial Narrow", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.cbCOMPort.FormattingEnabled = true;
-            this.cbCOMPort.Location = new System.Drawing.Point(384, 45);
+            this.cbCOMPort.Location = new System.Drawing.Point(576, 69);
+            this.cbCOMPort.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.cbCOMPort.Name = "cbCOMPort";
-            this.cbCOMPort.Size = new System.Drawing.Size(76, 28);
+            this.cbCOMPort.Size = new System.Drawing.Size(112, 37);
             this.cbCOMPort.Sorted = true;
             this.cbCOMPort.TabIndex = 16;
             this.cbCOMPort.SelectedIndexChanged += new System.EventHandler(this.cbCOMPort_SelectedIndexChanged);
@@ -266,9 +283,10 @@ namespace Kortleser
             // pbLocked
             // 
             this.pbLocked.Image = global::Kortleser.Properties.Resources.locked;
-            this.pbLocked.Location = new System.Drawing.Point(426, 266);
+            this.pbLocked.Location = new System.Drawing.Point(639, 409);
+            this.pbLocked.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.pbLocked.Name = "pbLocked";
-            this.pbLocked.Size = new System.Drawing.Size(50, 43);
+            this.pbLocked.Size = new System.Drawing.Size(75, 66);
             this.pbLocked.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.pbLocked.TabIndex = 17;
             this.pbLocked.TabStop = false;
@@ -277,27 +295,49 @@ namespace Kortleser
             // 
             this.pbDoor.Image = global::Kortleser.Properties.Resources.Door_Closed;
             this.pbDoor.InitialImage = null;
-            this.pbDoor.Location = new System.Drawing.Point(384, 99);
+            this.pbDoor.Location = new System.Drawing.Point(576, 152);
+            this.pbDoor.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.pbDoor.Name = "pbDoor";
-            this.pbDoor.Size = new System.Drawing.Size(135, 161);
+            this.pbDoor.Size = new System.Drawing.Size(202, 248);
             this.pbDoor.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.pbDoor.TabIndex = 15;
             this.pbDoor.TabStop = false;
             // 
             // pbAlarm
             // 
-            this.pbAlarm.Location = new System.Drawing.Point(416, 327);
+            this.pbAlarm.Location = new System.Drawing.Point(624, 503);
+            this.pbAlarm.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.pbAlarm.Name = "pbAlarm";
-            this.pbAlarm.Size = new System.Drawing.Size(71, 71);
+            this.pbAlarm.Size = new System.Drawing.Size(106, 109);
             this.pbAlarm.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.pbAlarm.TabIndex = 18;
             this.pbAlarm.TabStop = false;
             // 
+            // btnSisteAdgang
+            // 
+            this.btnSisteAdgang.Location = new System.Drawing.Point(44, 661);
+            this.btnSisteAdgang.Name = "btnSisteAdgang";
+            this.btnSisteAdgang.Size = new System.Drawing.Size(160, 32);
+            this.btnSisteAdgang.TabIndex = 19;
+            this.btnSisteAdgang.Text = "Siste adgang";
+            this.btnSisteAdgang.UseVisualStyleBackColor = true;
+            this.btnSisteAdgang.Click += new System.EventHandler(this.btnSisteAdgang_Click);
+            // 
+            // txtSisteAdgang
+            // 
+            this.txtSisteAdgang.Enabled = false;
+            this.txtSisteAdgang.Location = new System.Drawing.Point(220, 661);
+            this.txtSisteAdgang.Name = "txtSisteAdgang";
+            this.txtSisteAdgang.Size = new System.Drawing.Size(314, 26);
+            this.txtSisteAdgang.TabIndex = 20;
+            // 
             // Kortleser
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(579, 531);
+            this.ClientSize = new System.Drawing.Size(868, 817);
+            this.Controls.Add(this.txtSisteAdgang);
+            this.Controls.Add(this.btnSisteAdgang);
             this.Controls.Add(this.pbAlarm);
             this.Controls.Add(this.pbLocked);
             this.Controls.Add(this.cbCOMPort);
@@ -316,6 +356,7 @@ namespace Kortleser
             this.Controls.Add(this.label2);
             this.Controls.Add(this.txt_KortID);
             this.Controls.Add(this.btn_num_1);
+            this.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.Name = "Kortleser";
             this.Text = "Kortleser";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Kortleser_FormClosing);
@@ -350,6 +391,8 @@ namespace Kortleser
         private System.Windows.Forms.Timer tD4;
         private System.Windows.Forms.PictureBox pbLocked;
         private System.Windows.Forms.PictureBox pbAlarm;
+        private System.Windows.Forms.Button btnSisteAdgang;
+        private System.Windows.Forms.TextBox txtSisteAdgang;
     }
 }
 
