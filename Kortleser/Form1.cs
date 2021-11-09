@@ -47,6 +47,9 @@ namespace Kortleser
             VelgKortleserNummer();
         }
 
+        /// <summary>
+        /// Åpner et vindu man kan velge kortleserID
+        /// </summary>
         private void VelgKortleserNummer()
         {
             while (!OK)
@@ -68,9 +71,9 @@ namespace Kortleser
                         OK = true;
                         kortlesernummer = Kortlesernummer;
                     }
-                    else 
-                    { 
-                        MessageBox.Show("Kortlesernummer må være et heltall mellom 0000 og 9999"); 
+                    else
+                    {
+                        MessageBox.Show("Kortlesernummer må være et heltall mellom 0000 og 9999");
                     }
 
                 }
@@ -83,6 +86,7 @@ namespace Kortleser
             OK = false;
         }
 
+
         private void Kortleser_Load(object sender, EventArgs e)
         {
             if (Cancel)
@@ -93,6 +97,9 @@ namespace Kortleser
             OppdaterComPorter();
         }
 
+        /// <summary>
+        /// Oppdaterer innholdet i ComboBox'en med COMporter
+        /// </summary>
         private void OppdaterComPorter()
         {
             string[] alleComPortNavn = SerialPort.GetPortNames();
@@ -103,6 +110,10 @@ namespace Kortleser
             if (cbCOMPort.Items.Count > 0) cbCOMPort.SelectedIndex = 0;
         }
 
+        /// <summary>
+        /// Endrer inntastet PINkode basert på input fra SimSim og tastaturet i Kortleser
+        /// </summary>
+        /// <param name="input"></param>
         public void PIN_innlesning(char input)
         {
             if (tD4.Enabled == true)
@@ -149,6 +160,10 @@ namespace Kortleser
             }
         }
 
+
+        /// <summary>
+        /// Sender adgangsforespørsel og mottar svar fra Sentralen
+        /// </summary>
         public void SendAdgangForesporsel()
         {
             if (kontaktMedServer)
@@ -167,6 +182,12 @@ namespace Kortleser
             }
         }
 
+        /// <summary>
+        /// Sender en melding til Sentralen
+        /// </summary>
+        /// <param name="s"></param>
+        /// <param name="dataSomSendes"></param>
+        /// <param name="ferdig"></param>
         static void SendDataTilSentral(Socket s, string dataSomSendes, out bool ferdig)
         {
             try
@@ -181,6 +202,10 @@ namespace Kortleser
             }
         }
 
+        /// <summary></summary>
+        /// <param name="s"></param>
+        /// <param name="ferdig"></param>
+        /// <returns>Melding fra Sentral</returns>
         static string MottaDataFraSentral(Socket s, out bool ferdig)
         {
             byte[] data = new byte[1024];
@@ -200,19 +225,27 @@ namespace Kortleser
             return svar;
         }
 
-        private void Unlock() 
+        /// <summary>
+        /// Ber SimSim låse opp døren
+        /// </summary>
+        private void Unlock()
         {
             sp.Write("$O50");
         }
 
 
-
-        private void AlarmPå()
+        /// <summary>
+        /// Setter alarmen på og sender melding om alarm til Sentralen
+        /// </summary>
+        /// <param name="melding"></param>
+        private void AlarmPå(string melding)
         {
             sp.Write("$O71");
             pbAlarm.Image = global::Kortleser.Properties.Resources.alarm;
+            string AlarmMelding = $"Alarm,{kortlesernummer},{melding},{sisteAdgang.Split(',')[1]}";
+            SendDataTilSentral(klientSokkel, AlarmMelding, out ferdig);
             alarm = true;
-        } //Sjekk denne
+        } //Sjekk denne*
         private void ResetAlarm()
         {
             if ((Convert.ToInt32(AnalogInn1) < 500) && (DigitalI[7] == 0))
@@ -228,6 +261,13 @@ namespace Kortleser
             tD4.Enabled = false;
             txt_KortID.Text = "";
         } //Sjekk denne
+
+
+        /// <summary>
+        /// Kjører når man er på vei til å lukke programmet
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void Kortleser_FormClosing(object sender, FormClosingEventArgs e)
         {
             if (!Cancel)
@@ -251,6 +291,9 @@ namespace Kortleser
 
 
         //KNAPPER OG TEKSTBOKS
+        
+        
+        
         private void txt_KortID_TextChanged(object sender, EventArgs e)
         {
             string txt = txt_KortID.Text;
@@ -346,8 +389,13 @@ namespace Kortleser
             txtSisteAdgang.Text = sisteAdgang;
         }
 
+    
 
-
+        /// <summary>
+        /// Kjører når data fra COMporten 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void sp_DataReceived(object sender, SerialDataReceivedEventArgs e) //Kjører når seriellporten får en ny melding
         {
             string data = sp.ReadExisting();
@@ -363,6 +411,11 @@ namespace Kortleser
 
             }
         }
+
+
+        /// <summary>
+        /// Tolker meldingen fra SimSim
+        /// </summary>
         private void MeldingsTolker() //Tolker meldingen seriellporten får fra SimSim
         {
             DigitalI = MeldingFraSimSim.Substring(MeldingFraSimSim.IndexOf('D') + 1, 8);        // D
@@ -420,6 +473,7 @@ namespace Kortleser
                 if (!open)
                 {
                     pbDoor.Image = global::Kortleser.Properties.Resources.Door_Open;
+                    tAlarm.Enabled = true;
                     open = true;
                 }
             }
@@ -428,6 +482,7 @@ namespace Kortleser
                 if (open)
                 {
                     pbDoor.Image = global::Kortleser.Properties.Resources.Door_Closed;
+                    tAlarm.Enabled = false;
                     open = false;
                     sp.WriteLine("$O51");
                 }
@@ -435,24 +490,40 @@ namespace Kortleser
 
             if (Convert.ToInt32(AnalogInn1) > 500) //Her har noen BRYTET INN!
             {
-                AlarmPå();
+                AlarmPå("Dør brutt opp");
             }
             else
             {
                 ResetAlarm();
             }
 
-            if (DigitalI[7] == '1') //Viser om alarmen er aktivert
+            if (DigitalO[7] == '1') //Viser om alarmen er aktivert
             {
-                AlarmPå();
+                AlarmPå("Utløst med inngang på SimSim");
             }
-            else if (DigitalI[7] == '0')
+            else if (DigitalO[7] == '0')
             {
                 ResetAlarm();
             }
 
 
         } //Sjekk alarmdel her
+
+        /// <summary>
+        /// Utløser alarmen da døren har stått åpen for lenge
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void tAlarm_Tick(object sender, EventArgs e)
+        {
+            AlarmPå("Dør har stått åpen for lenge");
+        }
+
+        /// <summary>
+        /// Når man bytter COMport
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void cbCOMPort_SelectedIndexChanged(object sender, EventArgs e)
         {
             OK = false;
