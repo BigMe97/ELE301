@@ -315,7 +315,7 @@ namespace Kortleser
             // 
             // btnSisteAdgang
             // 
-            this.btnSisteAdgang.Location = new System.Drawing.Point(44, 661);
+            this.btnSisteAdgang.Location = new System.Drawing.Point(43, 657);
             this.btnSisteAdgang.Name = "btnSisteAdgang";
             this.btnSisteAdgang.Size = new System.Drawing.Size(160, 32);
             this.btnSisteAdgang.TabIndex = 19;
@@ -326,16 +326,16 @@ namespace Kortleser
             // txtSisteAdgang
             // 
             this.txtSisteAdgang.Enabled = false;
-            this.txtSisteAdgang.Location = new System.Drawing.Point(220, 661);
+            this.txtSisteAdgang.Location = new System.Drawing.Point(218, 660);
             this.txtSisteAdgang.Name = "txtSisteAdgang";
-            this.txtSisteAdgang.Size = new System.Drawing.Size(314, 26);
+            this.txtSisteAdgang.Size = new System.Drawing.Size(625, 26);
             this.txtSisteAdgang.TabIndex = 20;
             // 
             // Kortleser
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(868, 817);
+            this.ClientSize = new System.Drawing.Size(868, 749);
             this.Controls.Add(this.txtSisteAdgang);
             this.Controls.Add(this.btnSisteAdgang);
             this.Controls.Add(this.pbAlarm);

@@ -15,16 +15,23 @@ using System.IO.Ports;
 
 namespace Kortleser
 {
-    //Hei
     public partial class Kortleser : Form
     {
-
         public string MeldingFraSimSim = "";
-        static string passcode = "12345";
-        static string kortlesesernummer;
-        static bool OK = false, Cancel = false;
-        static string DigitalO, DigitalI, Thermistor, AnalogInn1, AnalogInn2, Temp1, Temp2;
-        static bool open = false, alarm = false, locked = true;
+        static string PIN = "12345";
+        static string kortlesernummer;
+        static bool OK = false;
+        static bool Cancel = false;
+        static string DigitalO;
+        static string DigitalI;
+        static string Thermistor;
+        static string AnalogInn1;
+        static string AnalogInn2;
+        static string Temp1;
+        static string Temp2;
+        static bool open = false;
+        static bool alarm = false;
+        static bool locked = true;
         string sisteAdgang = "Ingen forsøk";
 
         Socket klientSokkel = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
@@ -34,17 +41,47 @@ namespace Kortleser
         byte[] data = new byte[1024];
         string input, stringData;
 
-
-
         public Kortleser()
         {
             InitializeComponent();
             VelgKortleserNummer();
-            KobleTilServer();
-
         }
 
+        private void VelgKortleserNummer()
+        {
+            while (!OK)
+            {
+                string Kortlesernummer = Interaction.InputBox("Hvilken kortleser er dette?", "Kortleservelger", "0000");
+                try
+                {
+                    if (Kortlesernummer == "") //If user cancels
+                    {
+                        Cancel = true;
+                        kortlesernummer = "0000";
+                        break;
+                    }
 
+                    Convert.ToInt32(Kortlesernummer); //Keep the string a number
+
+                    if (Kortlesernummer.Length == 4) //Keep the string at 4 digits
+                    {
+                        OK = true;
+                        kortlesernummer = Kortlesernummer;
+                    }
+                    else 
+                    { 
+                        MessageBox.Show("Kortlesernummer må være et heltall mellom 0000 og 9999"); 
+                    }
+
+                }
+                catch (Exception)
+                {
+                    MessageBox.Show("Kortlesernummer må være et heltall mellom 0000 og 9999");
+                    OK = false;
+                }
+            }
+            OK = false;
+        }
 
         private void Kortleser_Load(object sender, EventArgs e)
         {
@@ -52,38 +89,168 @@ namespace Kortleser
             {
                 Application.Exit();
             }
-            this.Text = "Kortleser " + kortlesesernummer;
+            this.Text = "Kortleser " + kortlesernummer;
             OppdaterComPorter();
         }
 
-
-
-        private void cbCOMPort_SelectedIndexChanged(object sender, EventArgs e)
+        private void OppdaterComPorter()
         {
-            OK = false;
+            string[] alleComPortNavn = SerialPort.GetPortNames();
+            foreach (string item in alleComPortNavn)
+            {
+                cbCOMPort.Items.Add(item);
+            }
+            if (cbCOMPort.Items.Count > 0) cbCOMPort.SelectedIndex = 0;
+        }
+
+        public void PIN_innlesning(char input)
+        {
+            if (tD4.Enabled == true)
+            {
+                if (input == 'C')
+                {
+                    PIN = "     ";
+                }
+                else if (input == '#')
+                {
+                    //Gjør ingenting
+                }
+                else
+                {
+                    switch (PIN.Length)
+                    {
+                        case 5:
+                            PIN = input.ToString();
+                            break;
+
+                        case 1:
+                            PIN = PIN + input;
+                            break;
+
+                        case 2:
+                            PIN = PIN + input;
+                            break;
+
+                        case 3:
+                            PIN = PIN + input;
+                            SendAdgangForesporsel();
+                            sp.WriteLine("$O40"); //Skriver utgang 4 lav siden vi har brukt under 45 sek
+                            tD4.Enabled = false; //Stopper timeren for 45 sek
+                            txt_KortID.Text = "";
+                            PIN = "     ";
+                            break;
+
+                        default:
+                            MessageBox.Show("Noe feilet");
+                            PIN = "     ";
+                            break;
+                    }
+                }
+            }
+        }
+
+        public void SendAdgangForesporsel()
+        {
+            if (kontaktMedServer)
+            {
+                input = "Forespørsel: " + txt_KortID.Text + ',' + PIN + ',' + kortlesernummer;
+                if (!ferdig)
+                {
+                    SendDataTilSentral(klientSokkel, input, out ferdig); //Sender kortnummer og PINkode til Sentralen
+                    stringData = MottaDataFraSentral(klientSokkel, out ferdig); //Svarer om dette ligger i databasen vår
+                    sisteAdgang = Convert.ToString(DateTime.Now) + ", " + txt_KortID.Text + ", " + stringData;
+                    if (stringData == "godkjent")
+                    {
+                        Unlock();
+                    }
+                }
+            }
+        }
+
+        static void SendDataTilSentral(Socket s, string dataSomSendes, out bool ferdig)
+        {
             try
             {
-                sp.Close();
-                sp.PortName = cbCOMPort.SelectedItem.ToString();
-                sp.BaudRate = 9600;
-                sp.ReadTimeout = 1000;
-                sp.Open();
-                Thread.Sleep(1000);
-                sp.Write("$R1");         // Be om en melding
-                Thread.Sleep(1000);
-                sp.Write("$E1");        // Be om melding ved endring av data
-                Thread.Sleep(1000);
-                sp.Write("$S002");      // Oppdater hvert 2. sekund
+                s.Send(Encoding.ASCII.GetBytes(dataSomSendes));
+                ferdig = false;
             }
-            catch (Exception)
+            catch (Exception unntak)
             {
-                MessageBox.Show("Prøv en annen serieport");
+                Console.WriteLine("Feil" + unntak.Message);
+                ferdig = true;
             }
+        }
+
+        static string MottaDataFraSentral(Socket s, out bool ferdig)
+        {
+            byte[] data = new byte[1024];
+            string svar = " ";
+
+            try
+            {
+                int antallMottatt = s.Receive(data);
+                svar = Encoding.ASCII.GetString(data, 0, antallMottatt);
+                ferdig = false;
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show("Feil" + e.Message);
+                ferdig = true;
+            }
+            return svar;
+        }
+
+        private void Unlock() 
+        {
+            sp.Write("$O50");
         }
 
 
 
+        private void AlarmPå()
+        {
+            sp.Write("$O71");
+            pbAlarm.Image = global::Kortleser.Properties.Resources.alarm;
+            alarm = true;
+        } //Sjekk denne
+        private void ResetAlarm()
+        {
+            if ((Convert.ToInt32(AnalogInn1) < 500) && (DigitalI[7] == 0))
+            {
+                sp.Write("$O70");
+                pbAlarm.Image = null;
+                alarm = false;
+            }
+        } //Sjekk denne
+        private void tD4_Tick(object sender, EventArgs e)
+        {
+            sp.Write("$O40");
+            tD4.Enabled = false;
+            txt_KortID.Text = "";
+        } //Sjekk denne
+        private void Kortleser_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            if (!Cancel)
+            {
+                var result = MessageBox.Show("Er du sikker på at du vil fjerne denne kortleseren?", "Fjerne kortleser " + kortlesernummer.ToString(), MessageBoxButtons.YesNo, MessageBoxIcon.Question);
 
+                // If the no button was pressed ...
+                if (result == DialogResult.No)
+                {
+                    // cancel the closure of the form.
+                    e.Cancel = true;
+                }
+                else if (kontaktMedServer)
+                {
+                    klientSokkel.Shutdown(SocketShutdown.Both);
+                    klientSokkel.Close();
+                }
+            }
+        } //Sjekk denne
+
+
+
+        //KNAPPER OG TEKSTBOKS
         private void txt_KortID_TextChanged(object sender, EventArgs e)
         {
             string txt = txt_KortID.Text;
@@ -114,234 +281,74 @@ namespace Kortleser
             }
         }
 
-        // Nummer knappene
         private void btn_num_1_Click(object sender, EventArgs e)
         {
-            TM_kode('1');
+            PIN_innlesning('1');
         }
 
         private void btn_num_2_Click(object sender, EventArgs e)
         {
-            TM_kode('2');
+            PIN_innlesning('2');
         }
 
         private void btn_num_3_Click(object sender, EventArgs e)
         {
-            TM_kode('3');
+            PIN_innlesning('3');
         }
 
         private void btn_num_4_Click(object sender, EventArgs e)
         {
-            TM_kode('4');
+            PIN_innlesning('4');
         }
 
         private void btn_num_5_Click(object sender, EventArgs e)
         {
-            TM_kode('5');
+            PIN_innlesning('5');
         }
 
         private void btn_num_6_Click(object sender, EventArgs e)
         {
-            TM_kode('6');
+            PIN_innlesning('6');
         }
 
         private void btn_num_7_Click(object sender, EventArgs e)
         {
-            TM_kode('7');
+            PIN_innlesning('7');
         }
 
         private void btn_num_8_Click(object sender, EventArgs e)
         {
-            TM_kode('8');
+            PIN_innlesning('8');
         }
 
         private void btn_num_9_Click(object sender, EventArgs e)
         {
-            TM_kode('9');
+            PIN_innlesning('9');
         }
 
         private void btn_num_0_Click(object sender, EventArgs e)
         {
-            TM_kode('0');
+            PIN_innlesning('0');
         }
 
         private void btn_Clear_Click(object sender, EventArgs e)
         {
-            TM_kode('C');
+            PIN_innlesning('C');
         }
 
-        // Veit ikke hva/om vi skal bruke den til noe men det så fint ut
-        private void btn_num_HASH_Click(object sender, EventArgs e)
+        private void btn_num_HASH_Click(object sender, EventArgs e) // Veit ikke hva/om vi skal bruke den til noe men det så fint ut
         {
-            TM_kode('#');
-        }
-
-
-        private void VelgKortleserNummer()
-        {
-            while (!OK)
-            {
-                string txt = Interaction.InputBox("Hvilken kortleser er dette?", "Kortleservelger", "0000");
-                try
-                {
-                    // If user cancels
-                    if (txt == "")
-                    {
-                        Cancel = true;
-                        kortlesesernummer = "0000";
-                        break;
-                    }
-
-                    // Keep the string a number
-                    Convert.ToInt32(txt);
-
-                    // Keep the string at 4 digits
-                    if (txt.Length == 4)
-                    {
-                        OK = true;
-                        kortlesesernummer = txt;
-                    }
-                    else { MessageBox.Show("1 Kortlesernummer må være et heltall mellom 0000 og 9999"); }
-
-                }
-                catch (Exception)
-                {
-                    MessageBox.Show("2 Kortlesernummer må være et heltall mellom 0000 og 9999");
-                    OK = false;
-                }
-            }
-            OK = false;
-
-        }
-
-        private void OppdaterComPorter()
-        {
-            string[] alleComPortNavn = SerialPort.GetPortNames();
-            foreach (string item in alleComPortNavn)
-            {
-                cbCOMPort.Items.Add(item);
-            }
-            if (cbCOMPort.Items.Count > 0) cbCOMPort.SelectedIndex = 0;
-        }
-
-
-        public void TM_kode(char input)
-        {
-            if (tD4.Enabled == true)
-            {
-                if (input == 'C')
-                {
-                    passcode = "12345";
-                }
-                else if (input == '#')
-                {
-                    // Do something??
-                }
-                else
-                {
-                    switch (passcode.Length)
-                    {
-                        case 5:
-                            passcode = input.ToString();
-                            break;
-                        case 1:
-                            passcode = passcode + input;
-                            break;
-
-                        case 2:
-                            passcode = passcode + input;
-                            break;
-
-                        case 3:
-                            passcode = passcode + input;
-                            Send();
-                            sp.WriteLine("$O40");
-
-                            tD4.Enabled = false;
-                            txt_KortID.Text = "";
-                            passcode = "12345";
-                            break;
-
-                        default:
-                            MessageBox.Show("Noe feilet");
-                            passcode = "12345";
-                            break;
-                    }
-                }
-            }
-        }
-
-
-
-
-
-
-        // Send forespørsel til Sentral
-        public void Send()
-        {
-            // MessageBox.Show("Koden: " + passcode + "\nMelding fra SimSim: \n" + MeldingFraSimSim);
-
-            if (kontaktMedServer)
-            {
-                input =  "K" + txt_KortID.Text + "P" + passcode;
-                if (!ferdig)
-                {
-                    SendData(klientSokkel, input, out ferdig);
-                    stringData = MottaData(klientSokkel, out ferdig);
-                    sisteAdgang = Convert.ToString(DateTime.Now) + ", " + txt_KortID.Text + ", "+ stringData;
-                    if (stringData == "godkjent")
-                    {
-                        Unlock();
-                    }
-                }
-            }
+            PIN_innlesning('#');
         }
 
         private void btnSisteAdgang_Click(object sender, EventArgs e) //brukergrensesnitt som gir muligheten til å se siste adgangsforespørsel og Sentralens svar på den
-        { 
+        {
             txtSisteAdgang.Text = sisteAdgang;
         }
 
-        static void SendData(Socket s, string dataSomSendes, out bool ferdig)
-        {
-            try
-            {
-                s.Send(Encoding.ASCII.GetBytes(dataSomSendes));
-                ferdig = false;
-            }
-            catch (Exception unntak)
-            {
-                Console.WriteLine("Feil" + unntak.Message);
-                ferdig = true;
-            }
-        }
 
 
-        static string MottaData(Socket s, out bool ferdig)
-        {
-            byte[] data = new byte[1024];
-            string svar = " ";
-
-            try
-            {
-                int antallMottatt = s.Receive(data);
-                svar = Encoding.ASCII.GetString(data, 0, antallMottatt);
-                ferdig = false;
-            }
-            catch (Exception e)
-            {
-                MessageBox.Show("Feil" + e.Message);
-                ferdig = true;
-            }
-            return svar;
-        }
-
-
-
-
-
-
-        private void sp_DataReceived(object sender, SerialDataReceivedEventArgs e)
+        private void sp_DataReceived(object sender, SerialDataReceivedEventArgs e) //Kjører når seriellporten får en ny melding
         {
             string data = sp.ReadExisting();
             if ((data.Length == 65) && (data.IndexOf("$") == 2) && (data.IndexOf("#") == 64))
@@ -356,11 +363,8 @@ namespace Kortleser
 
             }
         }
-
-
-        private void MeldingsTolker()
+        private void MeldingsTolker() //Tolker meldingen seriellporten får fra SimSim
         {
-            // DigitalI, AnalogInn1, AnalogInn2, Temp1, Temp2;
             DigitalI = MeldingFraSimSim.Substring(MeldingFraSimSim.IndexOf('D') + 1, 8);        // D
             DigitalO = MeldingFraSimSim.Substring(MeldingFraSimSim.IndexOf('E') + 1, 8);        // E
             Thermistor = MeldingFraSimSim.Substring(MeldingFraSimSim.IndexOf('F') + 1, 4);      // F
@@ -369,36 +373,31 @@ namespace Kortleser
             Temp1 = MeldingFraSimSim.Substring(MeldingFraSimSim.IndexOf('I') + 1, 3);           // I
             Temp2 = MeldingFraSimSim.Substring(MeldingFraSimSim.IndexOf('j') + 1, 3);           // I
 
-
-            // Fordi oppgaven mener at SimSim skal kunne leke tastatur...
-            if (Convert.ToInt32(DigitalO.Substring(0, 3)) > 0)
+            if (Convert.ToInt32(DigitalO.Substring(0, 3)) > 0) //Fordi oppgaven sier at SimSim skal kunne funke som tastatur
             {
-
                 if (DigitalO[0] == '1')
                 {
                     sp.Write("$O00");
-                    TM_kode('0');
+                    PIN_innlesning('0');
                 }
                 if (DigitalO[1] == '1')
                 {
                     sp.Write("$O10");
-                    TM_kode('1');
+                    PIN_innlesning('1');
                 }
                 if (DigitalO[2] == '1')
                 {
                     sp.Write("$O20");
-                    TM_kode('2');
+                    PIN_innlesning('2');
                 }
                 if (DigitalO[3] == '1')
                 {
                     sp.Write("$30");
-                    TM_kode('3');
+                    PIN_innlesning('3');
                 }
             }
 
-
-            // Vise om døra er Låst
-            if (DigitalO[5] == '1')
+            if (DigitalO[5] == '1') //Viser om døra er Låst
             {
                 if (!locked)
                 {
@@ -416,8 +415,7 @@ namespace Kortleser
                 }
             }
 
-            // Vise om døra er åpen
-            if (DigitalO[6] == '1' && !locked)
+            if (DigitalO[6] == '1' && !locked) //Vise om døra er åpen
             {
                 if (!open)
                 {
@@ -435,7 +433,7 @@ namespace Kortleser
                 }
             }
 
-            if (Convert.ToInt32(AnalogInn1) > 500)
+            if (Convert.ToInt32(AnalogInn1) > 500) //Her har noen BRYTET INN!
             {
                 AlarmPå();
             }
@@ -444,8 +442,7 @@ namespace Kortleser
                 ResetAlarm();
             }
 
-            // Vise om alarmen er aktivert
-            if (DigitalI[7] == '1')
+            if (DigitalI[7] == '1') //Viser om alarmen er aktivert
             {
                 AlarmPå();
             }
@@ -455,80 +452,29 @@ namespace Kortleser
             }
 
 
-        }
-
-
-        // Alarm!!!
-        private void AlarmPå()
+        } //Sjekk alarmdel her
+        private void cbCOMPort_SelectedIndexChanged(object sender, EventArgs e)
         {
-            sp.Write("$O71");
-            pbAlarm.Image = global::Kortleser.Properties.Resources.alarm;
-            alarm = true;
-        }
-
-        // Sjekk om alarmen kan resettes
-        private void ResetAlarm()
-        {
-            if ((Convert.ToInt32(AnalogInn1) < 500 && DigitalI[7] == 0))
-            {
-                pbAlarm.Image = null;
-                sp.Write("$O70");
-            }
-        }
-
-        private void Unlock()
-        {
-            sp.Write("$O50");
-        }
-
-
-
-        private void tD4_Tick(object sender, EventArgs e)
-        {
-            sp.Write("$O40");
-            tD4.Enabled = false;
-            txt_KortID.Text = "";
-        }
-
-
-        public void KobleTilServer()
-        {
+            OK = false;
             try
             {
-                klientSokkel.Connect(serverEP);    // blokkerende metode
-                kontaktMedServer = true;
+                sp.Close();
+                sp.PortName = cbCOMPort.SelectedItem.ToString();
+                sp.BaudRate = 9600;
+                sp.ReadTimeout = 1000;
+                sp.Open();
+                Thread.Sleep(1000);
+                sp.Write("$R1");        //Be om en melding
+                Thread.Sleep(1000);
+                sp.Write("$E1");        //Be om melding ved endring av data
+                Thread.Sleep(1000);
+                sp.Write("$S002");      //Oppdater hvert 2. sekund
             }
-            catch (SocketException e)
+            catch (Exception)
             {
-                MessageBox.Show("Feil" + e.Message);
-                kontaktMedServer = false;
-            }
-
-        }
-
-        private void Kortleser_FormClosing(object sender, FormClosingEventArgs e)
-        {
-            if (!Cancel)
-            {
-                var result = MessageBox.Show("Er du sikker på at du vil fjerne denne kortleseren?", "Fjerne kortleser " + kortlesesernummer.ToString(), MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-
-                // If the no button was pressed ...
-                if (result == DialogResult.No)
-                {
-                    // cancel the closure of the form.
-                    e.Cancel = true;
-                }
-                else if(kontaktMedServer)
-                {
-                    klientSokkel.Shutdown(SocketShutdown.Both);
-                    klientSokkel.Close();
-                }
+                MessageBox.Show("Prøv en annen serieport");
             }
         }
 
-
-
-
-        
     }
 }
