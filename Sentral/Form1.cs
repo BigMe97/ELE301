@@ -91,11 +91,8 @@ namespace Sentral
             {
                 mottattTekst = MottaData(kommSokkel, out ferdig);
                 if (!ferdig)
-                {
-                    MessageBox.Show(mottattTekst);
-                                                                                            // Verifiser melding
+                {                                                                                         // Verifiser melding
                     tekstSomSkalSendes = HandleCardAuthorisation(mottattTekst);
-
                     SendData(kommSokkel, tekstSomSkalSendes, out ferdig);
                 }
             }
@@ -125,10 +122,10 @@ namespace Sentral
             }
         }
 
-
+        
 
         /// <summary>
-        /// nåndterer mottatt data
+        /// Håndterer mottatt data fra en kortleser
         /// </summary>
         /// <param name="s">socket objekt</param>
         /// <param name="ferdig">ut verdi for å sjekke om den er ferdig</param>
@@ -163,7 +160,7 @@ namespace Sentral
         public bool AuthorizeCard(string kortID, string typedPinKode)
         {
             Bruker bruker = new Bruker(kortID, DB);
-            return bruker.Kort.Authorise(typedPinKode) && bruker.Kort.IsStillValid();
+            return bruker.Authorise(typedPinKode);
         }
 
 
@@ -178,7 +175,7 @@ namespace Sentral
             string kortID = melding.Substring(melding.IndexOf('K')+1,4); //matten på denne meldingen har eg ikkje sjekka, vensligst se over om dette stemmer
             string pin = melding.Substring(melding.IndexOf('P')+1, 4); // har kje sjekka matten her heller, bruke bare det som er skrevet tidligere
 
-            return AuthorizeCard(kortID, pin) ? "Godkjent" : "underkjent";
+            return AuthorizeCard(kortID, pin) ? "godkjent" : "underkjent";
         }
 
 
@@ -362,7 +359,10 @@ namespace Sentral
                 }
                 catch (Exception)
                 {
-                    MessageBox.Show("Dette kortet er allerede lagt inn");
+                    if (DB.QExistKortID(txt_KortID.Text))
+                    {
+                        MessageBox.Show("Dette kortet er allerede lagt inn");
+                    }
                 }
                 
                 if (txt_Fornavn.Text != "")
@@ -401,14 +401,12 @@ namespace Sentral
         /// <param name="e">event arguments</param>
         private void btn_Fjern_Click(object sender, EventArgs e)
         {
-            if ((txt_KortID.Text.Length == 4) && (txt_Pin.Text.Length == 4))
+            if ((txt_KortID.Text.Length == 4))
             {
-                string data = DB.Query("SELECT KortID FROM Bruker WHERE KortID = " + txt_KortID.Text);
-                if (data == txt_KortID.Text)
+                if (DB.QExistKortID(txt_KortID.Text))
                 {
                     DB.NonQuery($"DELETE FROM Bruker WHERE kortID = {txt_KortID.Text}");
                     MessageBox.Show("Bruker fjernet fra database");
-
                 }
             }
         }

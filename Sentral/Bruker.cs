@@ -8,18 +8,19 @@ namespace Sentral
 {
     class Bruker
     {
-        private Kort _kort;
-        public Kort Kort { get => _kort; }
+        private string _kortID;
 
         private string
             _email,
             _firstname,
-            _surname;
+            _surname,
+            _pin;
+
+        public string KortID { get => _kortID; }
 
         public string Email { get => _email; }
         public string FirstName { get => _firstname; }
         public string SurName { get => _surname; }
-
 
 
         protected Database _database;
@@ -28,55 +29,47 @@ namespace Sentral
         {
             _database = database;
 
-            string[] msg =
-                _database
-                .Query("SELECT Gyldig_Fra, Gyldig_Til, PIN, Fornavn, Etternavn, EPost FROM Bruker WHERE KortID = " + kortID)
-                .Split(',');
-
-            if (msg[0] != "" && msg[1] != "")
-            {
-                _kort = new MidlertidigKort(msg[2], msg[0], msg[1], _database);
-            }
-            else
-            {
-                _kort = new Kort(msg[2], _database);
-            }
-
-            _firstname = msg[3];
-            _surname = msg[4];
-            _email = msg[5];
+            string[] msg = _database.QueryBruker(kortID);
         }
-        
+
         public Bruker(string kortID, string epost, string fornavn, string etternavn, Database database)
         {
             _database = database;
 
-            string[] msg =
-                _database
-                .Query("SELECT Gyldig_Fra, Gyldig_Til, PIN FROM Bruker WHERE KortID = " + kortID)
-                .Split(',');
+            string[] msg = _database.Query(kortID).Split(',');
 
-            if (msg[0] != "" && msg[1] != "")
-            {
-                _kort = new MidlertidigKort(msg[2], msg[0], msg[1], _database);
-            }
-            else
-            {
-                _kort = new Kort(msg[2], _database);
-            }
 
             _firstname = fornavn;
             _surname = etternavn;
             _email = epost;
         }
 
-        public Bruker(Kort kort, string epost, string fornavn, string etternavn, Database database)
+        public Bruker(string kort, string pin, string epost, string fornavn, string etternavn, Database database)
         {
             _database = database;
-            _kort = kort;
+            _kortID = kort;
             _firstname = fornavn;
             _surname = etternavn;
             _email = epost;
+        }
+
+
+        /// <summary>
+        /// Authorises card and pin from DB
+        /// </summary>
+        /// <param name="pin"></param>
+        /// <returns>TRUE if pin is correct</returns>
+        public bool Authorise(string pin)
+        {
+            string[] data = _database.QueryBruker(_kortID);
+            if ((Convert.ToDateTime(data[0]) < DateTime.Today) && (Convert.ToDateTime(data[1]) > DateTime.Today))
+            {
+                return (data[2] == pin);
+            }
+            else
+            {
+                return false;
+            }
         }
     }
 }

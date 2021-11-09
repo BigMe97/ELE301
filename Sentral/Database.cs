@@ -53,7 +53,7 @@ namespace Sentral
             try
             {
                 con.Open();
-                cmd.Connection = con; //hei magnus eg fant ut kor cmd blei bundet opp mot con :p
+                cmd.Connection = con;
                 _connected = true;
             }
             catch (Exception)
@@ -61,6 +61,7 @@ namespace Sentral
                 _connected = false;
             }
         }
+
 
         /// <summary>
         /// executes a query but return rows affected instead of values returned
@@ -74,6 +75,7 @@ namespace Sentral
             cmd.CommandText = query;
             return cmd.ExecuteNonQuery();
         }
+
 
         /// <summary>
         /// queries the database for values
@@ -95,6 +97,69 @@ namespace Sentral
             }
             return data;
         }
+
+
+        /// <summary>
+        /// queries the database for values from Bruker
+        /// </summary>
+        /// <param name="KortID">the query to send</param>
+        /// <returns>List of string with [0]Gyldig_Fra, [1]Gyldig_Til, [2]Pin or NULL</returns>
+        public string[] QueryBruker(string KortID)
+        {
+            if (!_connected) Connect();
+            if (QExistKortID(KortID))
+            {
+                cmd.CommandText = "SELECT Gyldig_Fra, Gyldig_Til, PIN FROM Bruker WHERE KortID = " + KortID;
+                string data = "";
+                using (NpgsqlDataReader rdr = cmd.ExecuteReader())
+                {
+                    while (rdr.Read())
+                    {
+                        data = $"{rdr.GetDateTime(0),0},{rdr.GetDateTime(1),0},{rdr.GetInt16(2),0}";
+                    }
+                }
+                return data.Split(',');
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+
+
+        /// <summary>
+        /// Query database if card exists in the database
+        /// </summary>
+        /// <param name="KortDuVilSeOmFinnes"></param>
+        /// <returns>
+        /// TRUE if card exists in DB 
+        /// False if card does not exist in DB
+        /// </returns>
+        public bool QExistKortID(string KortDuVilSeOmFinnes)
+        {
+            if (!_connected) Connect();
+
+            cmd.CommandText = "SELECT KortID FROM Bruker WHERE KortID = " + KortDuVilSeOmFinnes;
+            string data = "";
+            using (NpgsqlDataReader rdr = cmd.ExecuteReader())
+            {
+                while (rdr.Read())
+                {
+                    data = $"{rdr.GetInt16(0),0}";
+                }
+            }
+            if (data.Length > 0)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+            
+        }
+
 
         /// <summary>
         /// custom query for getting the Gyldig_Fra and Gyldig_Til values using KortID
