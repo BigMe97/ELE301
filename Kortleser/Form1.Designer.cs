@@ -1,5 +1,4 @@
-﻿
-namespace Kortleser
+﻿namespace Kortleser
 {
     partial class Kortleser
     {
@@ -50,6 +49,9 @@ namespace Kortleser
             this.pbLocked = new System.Windows.Forms.PictureBox();
             this.pbDoor = new System.Windows.Forms.PictureBox();
             this.pbAlarm = new System.Windows.Forms.PictureBox();
+            this.btnSisteAdgang = new System.Windows.Forms.Button();
+            this.txtSisteAdgang = new System.Windows.Forms.TextBox();
+            this.tAlarm = new System.Windows.Forms.Timer(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.pbLocked)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pbDoor)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pbAlarm)).BeginInit();
@@ -293,11 +295,38 @@ namespace Kortleser
             this.pbAlarm.TabIndex = 18;
             this.pbAlarm.TabStop = false;
             // 
+            // btnSisteAdgang
+            // 
+            this.btnSisteAdgang.Location = new System.Drawing.Point(29, 427);
+            this.btnSisteAdgang.Margin = new System.Windows.Forms.Padding(2);
+            this.btnSisteAdgang.Name = "btnSisteAdgang";
+            this.btnSisteAdgang.Size = new System.Drawing.Size(107, 21);
+            this.btnSisteAdgang.TabIndex = 19;
+            this.btnSisteAdgang.Text = "Siste adgang";
+            this.btnSisteAdgang.UseVisualStyleBackColor = true;
+            this.btnSisteAdgang.Click += new System.EventHandler(this.btnSisteAdgang_Click);
+            // 
+            // txtSisteAdgang
+            // 
+            this.txtSisteAdgang.Enabled = false;
+            this.txtSisteAdgang.Location = new System.Drawing.Point(145, 429);
+            this.txtSisteAdgang.Margin = new System.Windows.Forms.Padding(2);
+            this.txtSisteAdgang.Name = "txtSisteAdgang";
+            this.txtSisteAdgang.Size = new System.Drawing.Size(418, 20);
+            this.txtSisteAdgang.TabIndex = 20;
+            // 
+            // tAlarm
+            // 
+            this.tAlarm.Interval = 15000;
+            this.tAlarm.Tick += new System.EventHandler(this.tAlarm_Tick);
+            // 
             // Kortleser
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(579, 531);
+            this.ClientSize = new System.Drawing.Size(579, 487);
+            this.Controls.Add(this.txtSisteAdgang);
+            this.Controls.Add(this.btnSisteAdgang);
             this.Controls.Add(this.pbAlarm);
             this.Controls.Add(this.pbLocked);
             this.Controls.Add(this.cbCOMPort);
@@ -350,6 +379,8 @@ namespace Kortleser
         private System.Windows.Forms.Timer tD4;
         private System.Windows.Forms.PictureBox pbLocked;
         private System.Windows.Forms.PictureBox pbAlarm;
+        private System.Windows.Forms.Button btnSisteAdgang;
+        private System.Windows.Forms.TextBox txtSisteAdgang;
+        private System.Windows.Forms.Timer tAlarm;
     }
 }
-
