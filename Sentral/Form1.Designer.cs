@@ -47,6 +47,14 @@ namespace Sentral
             this.label7 = new System.Windows.Forms.Label();
             this.btn_Fjern = new System.Windows.Forms.Button();
             this.btn_Nullstill = new System.Windows.Forms.Button();
+            this.btn_Rapport = new System.Windows.Forms.Button();
+            this.cb_Rapporter = new System.Windows.Forms.ComboBox();
+            this.cb_Kortlesere = new System.Windows.Forms.ComboBox();
+            this.l_RapportInfo = new System.Windows.Forms.Label();
+            this.l_Kortleser = new System.Windows.Forms.Label();
+            this.menuStrip1 = new System.Windows.Forms.MenuStrip();
+            this.MenuBtnLeggTilKortleser = new System.Windows.Forms.ToolStripMenuItem();
+            this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
             // btn_LeggInn
@@ -129,7 +137,7 @@ namespace Sentral
             // 
             // Calendar
             // 
-            this.Calendar.Location = new System.Drawing.Point(290, 255);
+            this.Calendar.Location = new System.Drawing.Point(225, 246);
             this.Calendar.Name = "Calendar";
             this.Calendar.TabIndex = 100;
             this.Calendar.TabStop = false;
@@ -231,12 +239,96 @@ namespace Sentral
             this.btn_Nullstill.UseVisualStyleBackColor = false;
             this.btn_Nullstill.Click += new System.EventHandler(this.btn_Nullstill_Click);
             // 
+            // btn_Rapport
+            // 
+            this.btn_Rapport.BackColor = System.Drawing.SystemColors.ControlLight;
+            this.btn_Rapport.Location = new System.Drawing.Point(641, 82);
+            this.btn_Rapport.Name = "btn_Rapport";
+            this.btn_Rapport.Size = new System.Drawing.Size(101, 36);
+            this.btn_Rapport.TabIndex = 11;
+            this.btn_Rapport.Text = "Lag Rapport";
+            this.btn_Rapport.UseVisualStyleBackColor = false;
+            this.btn_Rapport.Click += new System.EventHandler(this.btn_Rapport_Click);
+            // 
+            // cb_Rapporter
+            // 
+            this.cb_Rapporter.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.cb_Rapporter.FormattingEnabled = true;
+            this.cb_Rapporter.Items.AddRange(new object[] {
+            "Brukere",
+            "Adgangslogg",
+            "Ikke-godkjente adganger på en kortleser",
+            "Over 10 ikke-godkjente forsøk på en time",
+            "Alarmer",
+            "Første og siste adgang for en kortleser"});
+            this.cb_Rapporter.Location = new System.Drawing.Point(614, 124);
+            this.cb_Rapporter.Name = "cb_Rapporter";
+            this.cb_Rapporter.Size = new System.Drawing.Size(166, 28);
+            this.cb_Rapporter.TabIndex = 13;
+            this.cb_Rapporter.SelectedIndexChanged += new System.EventHandler(this.cb_Rapporter_SelectedIndexChanged);
+            // 
+            // cb_Kortlesere
+            // 
+            this.cb_Kortlesere.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.cb_Kortlesere.FormattingEnabled = true;
+            this.cb_Kortlesere.Location = new System.Drawing.Point(641, 190);
+            this.cb_Kortlesere.Name = "cb_Kortlesere";
+            this.cb_Kortlesere.Size = new System.Drawing.Size(104, 28);
+            this.cb_Kortlesere.TabIndex = 14;
+            this.cb_Kortlesere.Visible = false;
+            // 
+            // l_RapportInfo
+            // 
+            this.l_RapportInfo.AutoSize = true;
+            this.l_RapportInfo.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.l_RapportInfo.Location = new System.Drawing.Point(597, 221);
+            this.l_RapportInfo.Name = "l_RapportInfo";
+            this.l_RapportInfo.Size = new System.Drawing.Size(213, 36);
+            this.l_RapportInfo.TabIndex = 103;
+            this.l_RapportInfo.Text = "Velg tidsgrensene for rapporten\r\n i datofeltene til venstre";
+            this.l_RapportInfo.TextAlign = System.Drawing.ContentAlignment.TopCenter;
+            this.l_RapportInfo.Visible = false;
+            // 
+            // l_Kortleser
+            // 
+            this.l_Kortleser.AutoSize = true;
+            this.l_Kortleser.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.l_Kortleser.Location = new System.Drawing.Point(644, 169);
+            this.l_Kortleser.Name = "l_Kortleser";
+            this.l_Kortleser.Size = new System.Drawing.Size(98, 18);
+            this.l_Kortleser.TabIndex = 104;
+            this.l_Kortleser.Text = "Velg kortleser";
+            this.l_Kortleser.TextAlign = System.Drawing.ContentAlignment.TopCenter;
+            this.l_Kortleser.Visible = false;
+            // 
+            // menuStrip1
+            // 
+            this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.MenuBtnLeggTilKortleser});
+            this.menuStrip1.Location = new System.Drawing.Point(0, 0);
+            this.menuStrip1.Name = "menuStrip1";
+            this.menuStrip1.Size = new System.Drawing.Size(824, 24);
+            this.menuStrip1.TabIndex = 105;
+            this.menuStrip1.Text = "menuStrip1";
+            // 
+            // MenuBtnLeggTilKortleser
+            // 
+            this.MenuBtnLeggTilKortleser.Name = "MenuBtnLeggTilKortleser";
+            this.MenuBtnLeggTilKortleser.Size = new System.Drawing.Size(106, 20);
+            this.MenuBtnLeggTilKortleser.Text = "Legg til kortleser";
+            this.MenuBtnLeggTilKortleser.Click += new System.EventHandler(this.MenuBtnLeggTilKortleser_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.Window;
-            this.ClientSize = new System.Drawing.Size(822, 442);
+            this.ClientSize = new System.Drawing.Size(824, 442);
+            this.Controls.Add(this.l_Kortleser);
+            this.Controls.Add(this.l_RapportInfo);
+            this.Controls.Add(this.cb_Kortlesere);
+            this.Controls.Add(this.cb_Rapporter);
+            this.Controls.Add(this.btn_Rapport);
             this.Controls.Add(this.btn_Nullstill);
             this.Controls.Add(this.btn_Fjern);
             this.Controls.Add(this.label7);
@@ -255,10 +347,14 @@ namespace Sentral
             this.Controls.Add(this.txt_Etternavn);
             this.Controls.Add(this.txt_Fornavn);
             this.Controls.Add(this.btn_LeggInn);
+            this.Controls.Add(this.menuStrip1);
+            this.MainMenuStrip = this.menuStrip1;
             this.Name = "Form1";
             this.Text = "Adgangs Sentral";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form1_FormClosing);
             this.Click += new System.EventHandler(this.Calendar_Leave);
+            this.menuStrip1.ResumeLayout(false);
+            this.menuStrip1.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -284,6 +380,13 @@ namespace Sentral
         private System.Windows.Forms.Label label7;
         private System.Windows.Forms.Button btn_Fjern;
         private System.Windows.Forms.Button btn_Nullstill;
+        private System.Windows.Forms.Button btn_Rapport;
+        private System.Windows.Forms.ComboBox cb_Rapporter;
+        private System.Windows.Forms.ComboBox cb_Kortlesere;
+        private System.Windows.Forms.Label l_RapportInfo;
+        private System.Windows.Forms.Label l_Kortleser;
+        private System.Windows.Forms.MenuStrip menuStrip1;
+        private System.Windows.Forms.ToolStripMenuItem MenuBtnLeggTilKortleser;
     }
 }
 
